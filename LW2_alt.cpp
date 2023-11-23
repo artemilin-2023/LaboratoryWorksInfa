@@ -17,6 +17,7 @@
 #include <iostream>
 #include <cmath>
 #include <iomanip>
+#include "fort.hpp"
 
 using namespace std;
 
@@ -32,6 +33,8 @@ int main()
     double x; // Текущий аргумент функции
 
     double resultF, resultG; // Результаты функций с текущим аргументом
+
+    fort::char_table table;
 
     cout << "Левая граница отрезка (A): "; cin >> a;
     cout << "Правая граница отрезка (B): "; cin >> b;
@@ -57,48 +60,26 @@ int main()
     x = a;
     h = (b-a) / n;
 
-    cout << "╔";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╤";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╤";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╗" << '\n';
+    table.set_cell_text_align(fort::text_align::center);
+    table.set_border_style(FT_SIMPLE_STYLE);
+    table.set_cell_left_padding(3);
+    table.set_cell_right_padding(3);
 
-    cout << "║" << setw(20) << 'x' << "│" << setw(20) << "f(x)" << "│" << setw(20) << "g(x)" << "║" << '\n';
-
-    cout << "╠";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╪";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╪";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╣" << '\n';
+    table << fort::header << "x" << "f(x)" << "g(x)" << fort::endr;
 
     for (int i = 0; i < n+1; ++i) {
         if(i % 3 == 0 && i != 0) {
-            cout << "╟";
-            for(size_t i = 0; i < 20; ++i) cout << "─";
-            cout << "┼";
-            for(size_t i = 0; i < 20; ++i) cout << "─";
-            cout << "┼";
-            for(size_t i = 0; i < 20; ++i) cout << "─";
-            cout << "╢" << '\n';
+            table << fort::separator;
         }
         resultF = f(x);
         resultG = g(x);
 
-        cout << "║" << setw(20) << x  << "│" << setw(20) << resultF << "│" << setw(20) << resultG << "║" << '\n';
+        table << x << resultF << resultG << fort::endr;
+
         x += h;
     }
 
-    cout << "╚";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╧";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╧";
-    for(size_t i = 0; i < 20; ++i) cout << "═";
-    cout << "╝" << '\n';
+    cout << table.to_string() << '\n';
 
     system("pause");
     return 0;
