@@ -22,7 +22,7 @@ using namespace std;
 
 const int CELL_WIDTH = 20;
 
-void print_table_line(ostream& outp, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount = 3, int cell_width = CELL_WIDTH);
+void print_table_line(ostream& output, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount = 3, int cell_width = CELL_WIDTH);
 double f(double x);
 double g(double x);
 
@@ -59,10 +59,6 @@ int main()
 
     x = a;
     h = (b-a) / n;
-    cout << "h " << h << '\n';
-    cout << "a " << a << '\n';
-    cout << "b " << b << '\n';
-    cout << "n " << n << '\n';
 
     print_table_line(cout, "╔", "═", "╤", "╗");
 
@@ -88,14 +84,14 @@ int main()
     return 0;
 }
 
-void print_table_line(ostream& outp, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount, int cell_width) {
-    outp << left_border;
+void print_table_line(ostream& output, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount, int cell_width) {
+    output << left_border;
     for(size_t cell_i = 0; cell_i < cell_amount; ++cell_i) {
         for(size_t i = 0; i < cell_width; ++i) cout << line;
         if(cell_i < cell_amount-1)
-            outp << divider;
+            output << divider;
     }
-    outp << right_border << '\n';
+    output << right_border << '\n';
 }
 
 double f(double x) {
