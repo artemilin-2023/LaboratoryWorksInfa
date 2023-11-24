@@ -30,7 +30,7 @@ int main()
 {
     вперед_славяне;
     double a, b; // Границы отрезка
-    int n = 1; // Количество секций (подотрезков)
+    int n = 1; // Количество точек
     double h; // Длина одной секции
     double x; // Текущий аргумент функции
 
@@ -39,59 +39,72 @@ int main()
     cout << "Левая граница отрезка (A): "; cin >> a;
     cout << "Правая граница отрезка (B): "; cin >> b;
 
-    if (a > b) {
-        cout << "Левая граница должна быть левее правой границы!\n";
+    // Проверка диапазона на корректность
+    if (a > b)
+    {
+        cerr << "Левая граница должна быть левее правой границы!\n";
         return 1;
     }
 
-    if (a != b) {
+    // Начало не совпадает с концом отрезка => количество точек (n) > 1
+    if (a != b)
+    {
         cout << "Количество секций (подотрезков) (N): "; cin >> n;
 
-        if (n < 1) {
-            cout << "Количество отрезков должно быть больше 0!\n";
-            return 1;
+        // Проверка на корректность
+        if (n < 1)
+        {
+            cerr << "Количество отрезков должно быть больше 0!\n";
+            return 2;
         }
 
-        ++n;
+        ++n; // Количество точек = количество секций + 1
     }
 
     cout << '\n';
 
+    // Инициализация
     x = a;
     h = (b-a) / n;
 
+    // Вывод заголовка таблицы
     print_table_line(cout, "╔", "═", "╤", "╗");
-
     cout << "║" << setw(CELL_WIDTH) << 'x' << "│" << setw(CELL_WIDTH) << "f(x)" << "│" << setw(CELL_WIDTH) << "g(x)" << "║" << '\n';
-
     print_table_line(cout, "╠", "═", "╪", "╣");
 
-    for (int i = 0; i < n; ++i) {
-        if(i % 3 == 0 && i != 0) {
+    for (int i = 0; i < n; ++i)
+    {
+        if(i % 3 == 0 && i != 0) // Каждая третья строка таблицы отчерчивается линией
+        {
             print_table_line(cout, "╟", "─", "┼", "╢");
         }
+
+        // Расчет значений функций в зависимости от текущего x
         resultF = f(x);
         resultG = g(x);
 
+        // Вывод значений
         cout << "║" << setw(CELL_WIDTH) << x  << "│" << setw(CELL_WIDTH) << resultF << "│" << setw(CELL_WIDTH) << resultG << "║" << '\n';
-        x += h;
+
+        x += h; // Смещение текущего x на шаг h
     }
 
+    // Вывод нижней границы таблицы
     print_table_line(cout, "╚", "═", "╧", "╝");
-
-    cout << endl;
 
     return 0;
 }
 
 void print_table_line(ostream& output, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount, int cell_width) {
     output << left_border;
-    for(size_t cell_i = 0; cell_i < cell_amount; ++cell_i) {
+    for(size_t cell_i = 0; cell_i < cell_amount; ++cell_i)
+    {
         for(size_t i = 0; i < cell_width; ++i) cout << line;
         if(cell_i < cell_amount-1)
             output << divider;
     }
-    output << right_border << '\n';
+
+    output << right_border << endl;
 }
 
 double f(double x) {
@@ -99,5 +112,5 @@ double f(double x) {
 }
 
 double g(double x) {
-    return (x - 1)* (x - 1)*(x - 1);
+    return (x - 1)*(x - 1)*(x - 1);
 }
