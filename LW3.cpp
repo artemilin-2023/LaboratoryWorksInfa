@@ -56,7 +56,7 @@ int main()
         file.close();
         return -2;
     }
-    else if (count_file_elements(file) < 3)
+    else if (count_file_elements(file) < 12)
     {
         cerr << "В файле недостаточно элементов, минимальное количество - 3";
         file.close();
