@@ -22,7 +22,7 @@ using namespace std;
 
 const int CELL_WIDTH = 20;
 
-void print_table_line(ostream& output, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount = 3, int cell_width = CELL_WIDTH);
+void print_table_line(ostream& output, const string& left_border, const string& line, const string& divider, const string& right_border, int cell_amount = 4, int cell_width = CELL_WIDTH);
 double f(double x);
 double g(double x);
 
@@ -30,7 +30,7 @@ int main()
 {
     вперед_славяне;
     double a, b; // Границы отрезка
-    int n = 0; // Количество точек
+    int n = 0; // Количество интервалов
     double h; // Длина одной секции
     double x; // Текущий аргумент функции
 
@@ -62,16 +62,23 @@ int main()
     cout << '\n';
 
     // Инициализация
-    x = a;
+    //x = a;
     h = (b-a) / n;
 
     // Вывод заголовка таблицы
     print_table_line(cout, "╔", "═", "╤", "╗");
-    cout << "║" << setw(CELL_WIDTH) << 'x' << "│" << setw(CELL_WIDTH) << "f(x)" << "│" << setw(CELL_WIDTH) << "g(x)" << "║" << '\n';
+    cout << "║" << setw(CELL_WIDTH) << 'N' << "│" << setw(CELL_WIDTH) << 'x' << "│" << setw(CELL_WIDTH) << "f(x)" << "│" << setw(CELL_WIDTH) << "g(x)" << "║" << '\n';
     print_table_line(cout, "╠", "═", "╪", "╣");
 
+    // int eps = h/10;
+    // while(x <= B + eps) { // ... }
+
+    // int i = 0;
+    // while(i <= N) { // ...; i++; }
     for (int i = 0; i <= n; ++i)
     {
+        x = a + i * h; // Переход к следующей точке
+
         if(i % 3 == 0 && i != 0) // Каждая третья строка таблицы отчерчивается линией
         {
             print_table_line(cout, "╟", "─", "┼", "╢");
@@ -82,9 +89,10 @@ int main()
         resultG = g(x);
 
         // Вывод значений
-        cout << "║" << setw(CELL_WIDTH) << x  << "│" << setw(CELL_WIDTH) << resultF << "│" << setw(CELL_WIDTH) << resultG << "║" << '\n';
+        cout << "║" << setw(CELL_WIDTH) << i  << "│" << setw(CELL_WIDTH) << x  << "│" << setw(CELL_WIDTH) << resultF << "│" << setw(CELL_WIDTH) << resultG << "║" << '\n';
 
-        x += h; // Смещение текущего x на шаг h
+        // x += h; // Смещение текущего x на шаг h
+        // i++;
     }
 
     // Вывод нижней границы таблицы
