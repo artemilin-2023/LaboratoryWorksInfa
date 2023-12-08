@@ -63,11 +63,11 @@ int main()
 
     // Инициализация
     //x = a;
-    h = (b-a) / n;
+    h = (n == 0) ? 0 : (b-a) / n;
 
     // Вывод заголовка таблицы
     print_table_line(cout, "╔", "═", "╤", "╗");
-    cout << "║" << setw(CELL_WIDTH) << 'N' << "│" << setw(CELL_WIDTH) << 'x' << "│" << setw(CELL_WIDTH) << "f(x)" << "│" << setw(CELL_WIDTH) << "g(x)" << "║" << '\n';
+    cout << "║" << setw(CELL_WIDTH) << 'i' << "│" << setw(CELL_WIDTH) << 'x' << "│" << setw(CELL_WIDTH) << "f(x)" << "│" << setw(CELL_WIDTH) << "g(x)" << "║" << '\n';
     print_table_line(cout, "╠", "═", "╪", "╣");
 
     // int eps = h/10;
