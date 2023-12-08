@@ -21,7 +21,7 @@ using namespace std;
 int main()
 {
     // Инициалилизация переменных
-    const double targetSum = 0.970962 - 0.01;//M_PI * M_PI * M_PI / 32; // Точная сумма
+    const double targetSum = M_PI * M_PI * M_PI / 32; // Точная сумма
 
     int n = 0; // Текущая иитерация
     int sign = -1; // Знак
