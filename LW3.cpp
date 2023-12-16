@@ -23,7 +23,9 @@ using namespace std;
 
 
 const int ARRAY_LENGTH = 10; // длина массива
-const string FILE_NAME = "data.txt"; // имя файла
+const int NUMBER_OF_ELEMENTS = 12;
+const string PATH_TO_TESTS = "C:\\tests\\";
+const string FILE_NAME = "test8.txt"; // имя файла
 
 int count_file_elements(ifstream &in);
 bool data_is_valid(ifstream  &in);
@@ -51,7 +53,7 @@ int main()
 
     int j = 0; // счетчик для цикла
 
-    ifstream file(FILE_NAME); // создание потока для чтения
+    ifstream file(PATH_TO_TESTS + FILE_NAME); // создание потока для чтения
     if (!file.is_open()) // файл не найден
     {
         cerr << "Ошибка открытия файла.";
@@ -64,9 +66,9 @@ int main()
         file.close();
         return -2;
     }
-    else if (count_file_elements(file) < 12) // файл содержит недостаточное количество данных
+    else if (count_file_elements(file) != NUMBER_OF_ELEMENTS) // файл содержит недостаточное количество данных
     {
-        cerr << "В файле недостаточно элементов, минимальное количество - 12";
+        cerr << "В файле должно быть ровно " << NUMBER_OF_ELEMENTS << " элементов!";
         file.close();
         return -3;
     }
@@ -78,10 +80,10 @@ int main()
     }
 
     file >> P >> N;
-    cout << "P: " << P << "\n" << "N: " << N << "\n";
-    if (N <= 0)
+    cout << "P: " << P << "\n" << "N: " << N << endl;
+    if (N <= 0 || N > ARRAY_LENGTH)
     {
-        cerr << "N должно быть больше 0!";
+        cerr << "N должно быть больше 0 и меньше " << ARRAY_LENGTH;
         file.close();
         return -4;
     }
@@ -89,7 +91,7 @@ int main()
     cout << "Исходный массив: ";
     while (file >> new_item && j < ARRAY_LENGTH) // чтение данных из файла и занесение их в массив
     {
-        if (new_item > 0 && j < N) // суммирование первых N положительных элементов
+        if (new_item > 0 && j < N) // суммирование положительных элементов среди первых N
             positive_nums_sum += new_item;
 
         vec[j++] = new_item;
@@ -103,8 +105,6 @@ int main()
         new_vec[i] = P + vec[i] + positive_nums_sum;
     }
 
-    // N не может быть больше, чем длина массива
-    N = min(N, ARRAY_LENGTH);
     for (int i = ARRAY_LENGTH - N; i < ARRAY_LENGTH; i++) // суммирование N последних элементов
         last_n_elements_sum += new_vec[i];
 
