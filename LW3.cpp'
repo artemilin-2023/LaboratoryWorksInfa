@@ -27,7 +27,7 @@ using std::filesystem::current_path;
 
 const int ARRAY_LENGTH = 10; // длина массива
 const int NUMBER_OF_ELEMENTS = 12;
-const string  PATH_TO_TESTS = current_path() += "/tests/";
+const string  PATH_TO_TESTS = current_path() += "/tests";
 const string FILE_NAME = "test8.txt"; // имя файла
 
 int count_file_elements(ifstream &in);
