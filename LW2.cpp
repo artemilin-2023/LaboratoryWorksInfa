@@ -49,7 +49,8 @@ int main()
     // Начало не совпадает с концом отрезка => количество точек (n) > 1
     if (a != b)
     {
-        cout << "Количество секций (подотрезков) (N): "; cin >> n;
+        cout << "Количество секций (подотрезков) (N): ";
+        cin >> n;
 
         // Проверка на корректность
         if (n < 1)
@@ -70,12 +71,9 @@ int main()
     cout << "║" << setw(CELL_WIDTH) << 'i' << "│" << setw(CELL_WIDTH) << 'x' << "│" << setw(CELL_WIDTH) << "f(x)" << "│" << setw(CELL_WIDTH) << "g(x)" << "║" << '\n';
     print_table_line(cout, "╠", "═", "╪", "╣");
 
-    // int eps = h/10;
-    // while(x <= B + eps) { // ... }
-
-    // int i = 0;
-    // while(i <= N) { // ...; i++; }
-    for (int i = 0; i <= n; ++i)
+     double eps = h * 0.1;
+     int i = 0;
+     while(x <= b + eps)
     {
         x = a + i * h; // Переход к следующей точке
 
@@ -91,8 +89,8 @@ int main()
         // Вывод значений
         cout << "║" << setw(CELL_WIDTH) << i  << "│" << setw(CELL_WIDTH) << x  << "│" << setw(CELL_WIDTH) << resultF << "│" << setw(CELL_WIDTH) << resultG << "║" << '\n';
 
-        // x += h; // Смещение текущего x на шаг h
-        // i++;
+        x += h; // Смещение текущего x на шаг h
+        i++;
     }
 
     // Вывод нижней границы таблицы
