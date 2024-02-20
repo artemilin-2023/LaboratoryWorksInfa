@@ -19,16 +19,39 @@
 #include <iomanip>
 #include <fstream>
 
+
 using namespace std;
 
 
+// Тесты
+// Не корректные
+const string FILE_NAME = "test.txt";       // Файла не существует
+//const string FILE_NAME = "test2.txt";     // Файл пуст
+//const string FILE_NAME = "test3.txt";     // Неверное количество данных
+//const string FILE_NAME = "test4.txt";     // Файл содержит буквенные/спец символы
+//const string FILE_NAME = "test5.txt";     // Некорректное значение N
+//const string FILE_NAME = "test6.txt";     // Исходные данные не содержат положительных значений
+//const string FILE_NAME = "test7.txt";     // Исходные данные содержат положительные значения на границе с N (не входят)
+
+// Корректные
+//const string FILE_NAME = "test8.txt";     // Все числа положительные
+//const string FILE_NAME = "test9.txt";     // Положительные и отрицательные
+//const string FILE_NAME = "test10.txt";     // Положительные на границе с N (входят), остальные - 0
+
+
 const int ARRAY_LENGTH = 10; // длина массива
+<<<<<<< HEAD:first-sem/LW3.cpp
 const string FILE_NAME = "data.txt"; // имя файла
+=======
+const int NUMBER_OF_ELEMENTS = 12;
+const string  PATH_TO_TESTS = "./tests/";
+>>>>>>> aa0002c2f02ab35fcbc6548a728f40363ed86064:LW3.cpp
 
 int count_file_elements(ifstream &in);
 bool data_is_valid(ifstream  &in);
-void reset_stream(ifstream &stream);
+void reset_stream(ifstream &stream, streampos start_pos);
 bool is_numeric(const string& str);
+bool first_n_elements_contains_positive_value(ifstream &file, int N);
 
 int main()
 {
@@ -51,7 +74,12 @@ int main()
 
     int j = 0; // счетчик для цикла
 
+<<<<<<< HEAD:first-sem/LW3.cpp
     ifstream file(FILE_NAME); // создание потока для чтения
+=======
+    cout << "Test source: " << PATH_TO_TESTS + FILE_NAME << endl;
+    ifstream file(PATH_TO_TESTS + FILE_NAME); // создание потока для чтения
+>>>>>>> aa0002c2f02ab35fcbc6548a728f40363ed86064:LW3.cpp
     if (!file.is_open()) // файл не найден
     {
         cerr << "Ошибка открытия файла.";
@@ -83,7 +111,13 @@ int main()
     {
         cerr << "N должно быть больше 0!";
         file.close();
-        return -4;
+        return -5;
+    }
+    if (!first_n_elements_contains_positive_value(file, N))
+    {
+        cerr << "Исходные данные не содержат положительных значений среди первых " << N << '\n';
+        file.close();
+        return -6;
     }
 
     cout << "Исходный массив: ";
@@ -141,14 +175,14 @@ int count_file_elements(ifstream &in)
     int counter = 0;
     while(in >> str) counter++;
 
-    reset_stream(in);
+    reset_stream(in, std::ios_base::beg);
     return counter;
 }
 
-void reset_stream(ifstream &stream)
+void reset_stream(ifstream &stream, streampos start_pos)
 {
     stream.clear();
-    stream.seekg(0L, std::ios_base::beg);
+    stream.seekg(start_pos);
 }
 
 bool data_is_valid(ifstream  &in)
@@ -159,7 +193,7 @@ bool data_is_valid(ifstream  &in)
         if (!is_numeric(input))
             return false;
     }
-    reset_stream(in);
+    reset_stream(in, std::ios_base::beg);
     return true;
 }
 
@@ -175,4 +209,18 @@ bool is_numeric(const string& str)
     }
 }
 
-
+bool first_n_elements_contains_positive_value(ifstream &file, int N)
+{
+    double value;
+    auto pos = file.tellg();
+    for (int i = 0; i < N; i++)
+    {
+        file >> value;
+        if (value > 0)
+        {
+            reset_stream(file, pos);
+            return true;
+        }
+    }
+    return false;
+}
