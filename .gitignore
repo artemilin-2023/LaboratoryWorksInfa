@@ -1,4 +1,9 @@
 # Project exclude paths
-/cmake-build-debug/
-/bin/
-/tests/
+cmake-build-debug/
+**/*.exe
+!/[Tt]ests/
+
+
+.idea/
+.vs/
+.vscode/

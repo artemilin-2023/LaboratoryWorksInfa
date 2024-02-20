@@ -18,17 +18,12 @@
 #include <cmath>
 #include <iomanip>
 #include <fstream>
-#include <filesystem>
-
 
 using namespace std;
-using std::filesystem::current_path;
 
 
 const int ARRAY_LENGTH = 10; // длина массива
-const int NUMBER_OF_ELEMENTS = 12;
-const string  PATH_TO_TESTS = current_path() += "/tests/";
-const string FILE_NAME = "test8.txt"; // имя файла
+const string FILE_NAME = "data.txt"; // имя файла
 
 int count_file_elements(ifstream &in);
 bool data_is_valid(ifstream  &in);
@@ -56,37 +51,37 @@ int main()
 
     int j = 0; // счетчик для цикла
 
-    ifstream file(PATH_TO_TESTS + FILE_NAME); // создание потока для чтения
+    ifstream file(FILE_NAME); // создание потока для чтения
     if (!file.is_open()) // файл не найден
     {
-        cerr << "Ошибка открытия файла.\n";
+        cerr << "Ошибка открытия файла.";
         file.close(); // закрыть поток чтения
         return -1;
     }
     else if (file.peek() == EOF) // файл не содержит данных
     {
-        cerr << "Файл пуст\n";
+        cerr << "Файл пуст";
         file.close();
         return -2;
     }
-    else if (count_file_elements(file) != NUMBER_OF_ELEMENTS) // файл содержит недостаточное количество данных
+    else if (count_file_elements(file) < 12) // файл содержит недостаточное количество данных
     {
-        cerr << "В файле должно быть ровно " << NUMBER_OF_ELEMENTS << " элементов!\n";
+        cerr << "В файле недостаточно элементов, минимальное количество - 12";
         file.close();
         return -3;
     }
     else if (!data_is_valid(file)) // файл содержит буквенные/спец символы
     {
-        cerr << "Ошибка данных: невозможно привести к типу  double\n";
+        cerr << "Ошибка данных: невозможно привести к типу  double";
         file.close();
         return -4;
     }
 
     file >> P >> N;
-    cout << "P: " << P << "\n" << "N: " << N << endl;
-    if (N <= 0 || N > ARRAY_LENGTH)
+    cout << "P: " << P << "\n" << "N: " << N << "\n";
+    if (N <= 0)
     {
-        cerr << "N должно быть больше 0 и меньше " << ARRAY_LENGTH << '\n';
+        cerr << "N должно быть больше 0!";
         file.close();
         return -4;
     }
@@ -94,7 +89,7 @@ int main()
     cout << "Исходный массив: ";
     while (file >> new_item && j < ARRAY_LENGTH) // чтение данных из файла и занесение их в массив
     {
-        if (new_item > 0 && j < N) // суммирование положительных элементов среди первых N
+        if (new_item > 0 && j < N) // суммирование первых N положительных элементов
             positive_nums_sum += new_item;
 
         vec[j++] = new_item;
@@ -108,6 +103,8 @@ int main()
         new_vec[i] = P + vec[i] + positive_nums_sum;
     }
 
+    // N не может быть больше, чем длина массива
+    N = min(N, ARRAY_LENGTH);
     for (int i = ARRAY_LENGTH - N; i < ARRAY_LENGTH; i++) // суммирование N последних элементов
         last_n_elements_sum += new_vec[i];
 
