@@ -40,12 +40,8 @@ const string FILE_NAME = "test.txt";       // Файла не существуе
 
 
 const int ARRAY_LENGTH = 10; // длина массива
-<<<<<<< HEAD:first-sem/LW3.cpp
-const string FILE_NAME = "data.txt"; // имя файла
-=======
 const int NUMBER_OF_ELEMENTS = 12;
 const string  PATH_TO_TESTS = "./tests/";
->>>>>>> aa0002c2f02ab35fcbc6548a728f40363ed86064:LW3.cpp
 
 int count_file_elements(ifstream &in);
 bool data_is_valid(ifstream  &in);
@@ -74,12 +70,7 @@ int main()
 
     int j = 0; // счетчик для цикла
 
-<<<<<<< HEAD:first-sem/LW3.cpp
-    ifstream file(FILE_NAME); // создание потока для чтения
-=======
-    cout << "Test source: " << PATH_TO_TESTS + FILE_NAME << endl;
     ifstream file(PATH_TO_TESTS + FILE_NAME); // создание потока для чтения
->>>>>>> aa0002c2f02ab35fcbc6548a728f40363ed86064:LW3.cpp
     if (!file.is_open()) // файл не найден
     {
         cerr << "Ошибка открытия файла.";
