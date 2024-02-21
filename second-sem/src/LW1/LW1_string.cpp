@@ -149,14 +149,14 @@ const string replace_symbols_in_longest_words(const string text)
 {
     int max_length = find_length_of_longest_word(text);
     auto words = split_string(text, ' ');
-    
-    for (auto word: words)
+
+    for (int i = 0; i < words.size(); i++)
     {
-        if (word.length() == max_length)
+        if (words[i].length() == max_length)
         {
-            char tmp = word[0];
-            word[0] = word[max_length - 1];
-            word[max_length - 1] = tmp;
+            char tmp = words[i][0];
+            words[i][0] = words[i][max_length - 1];
+            words[i][max_length - 1] = tmp;
         }
     }
 
@@ -180,7 +180,7 @@ int find_length_of_longest_word(string text)
         counter++;
     }
 
-    return counter;
+    return max_length;
 }
 
 pmr::vector<string> split_string(string text, const char seporator)
@@ -190,10 +190,11 @@ pmr::vector<string> split_string(string text, const char seporator)
 
     for (int i = 0; i < text.length(); i++)
     {
-        if(text[i] == seporator && !current_word.empty())
+        if(text[i] == seporator)
         {
             result.push_back(current_word);
             current_word = "";
+            continue;
         }
 
         current_word += text[i];
