@@ -13,14 +13,9 @@
 
 #define _USE_MATH_DEFINES
 
-// #include <algorithm>
 #include <iostream>
-// #include <cmath>
-// #include <cstring>
 #include <filesystem>
 #include <fstream>
-// #include <list>
-// #include <vector>
 
 const char TEST_CASE[] = "test.txt";
 const char TESTS_FOLDER_NAME[] = "tests";
@@ -47,20 +42,20 @@ int main() {
     }
 
     if (input_file.peek() == EOF) {
-        std::cerr << "Файл пуст." << '\n';
+        std::cerr << "Файл пуст.\n";
         return -2;
     }
 
     if (!check_elements(input_file)) {
-        std::cerr << "В файле должны находиться длина строки и сама строка, разделенные только пробелом. Пример:" << '\n';
-        std::cerr << "13 Hello, world!" << '\n';
+        std::cerr << "В файле должны находиться длина строки и сама строка, разделенные только пробелом. Пример:\n";
+        std::cerr << "13 Hello, world!\n";
         return -3;
     }
 
     input_file >> input_string_length;
     std::cout << "Ожидаемая длина строки: " << input_string_length << '\n';
     if (input_string_length < 1) {
-        std::cerr << "Ожидаемая длина строки не может быть меньше 1!" << '\n';
+        std::cerr << "Ожидаемая длина строки не может быть меньше 1!\n";
         input_file.close();
         return -4;
     }
@@ -86,7 +81,7 @@ int main() {
         }
     }
     if (input_file.peek() != EOF) {
-        std::cerr << "В файле есть данные на строках, кроме первой!" << '\n';
+        std::cerr << "В файле есть данные на строках, кроме первой!\n";
         return -7;
     }
 
@@ -157,7 +152,7 @@ char *replace_symbols_in_longest_words(const char *input) {
 size_t str_len(const char *text) {
     size_t c = 0;
     while (text[c] != '\0')
-        c++;
+        ++c;
     return c;
 }
 
