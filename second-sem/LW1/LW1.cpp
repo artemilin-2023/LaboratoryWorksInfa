@@ -22,11 +22,9 @@ const char TESTS_FOLDER_NAME[] = "tests";
 
 const std::string PATH_TO_TEST = ((std::filesystem::current_path() /= TESTS_FOLDER_NAME) /= TEST_CASE).string();
 
-const int MINIMUM_ELEMENTS_IN_FILE = 2;  // number, then non-empty string
-
 size_t str_len(const char *text);  // our own ffs
 void reset_stream(std::ifstream &stream, const std::streampos start_pos);
-bool check_elements(std::ifstream &in);
+bool validate_format(std::ifstream &in);
 char *remove_extra_white_spaces(const char *input);
 char *replace_symbols_in_longest_words(const char *input);
 
@@ -46,7 +44,7 @@ int main() {
         return -2;
     }
 
-    if (!check_elements(input_file)) {
+    if (!validate_format(input_file)) {
         std::cerr << "В файле должны находиться длина строки и сама строка, разделенные только пробелом. Пример:\n";
         std::cerr << "13 Hello, world!\n";
         return -3;
@@ -161,7 +159,7 @@ void reset_stream(std::ifstream &stream, const std::streampos start_pos) {
     stream.seekg(start_pos);
 }
 
-bool check_elements(std::ifstream &in) {
+bool validate_format(std::ifstream &in) {
     std::streamsize n;
     in >> n;
     // we're checking if there are actually any characters later in the code
