@@ -23,6 +23,7 @@ const char TESTS_FOLDER_NAME[] = "tests";
 const std::string PATH_TO_TEST = ((std::filesystem::current_path() /= TESTS_FOLDER_NAME) /= TEST_CASE).string();
 
 size_t str_len(const char *text);  // our own ffs
+void swap_char(char &a, char &b);  // same
 void reset_stream(std::ifstream &stream, const std::streampos start_pos);
 bool validate_format(std::ifstream &in);
 char *remove_extra_white_spaces(const char *input);
@@ -136,7 +137,7 @@ char *replace_symbols_in_longest_words(const char *input) {
         if (isspace(*(current_result)) || !*(current_result)) {
             // we don't want it to be null, duh
             if (word_start && current_result - word_start == longest_word)
-                std::swap(*word_start, *(current_result-1));
+                swap_char(*word_start, *(current_result-1));
             word_start = NULL;
         } else if (!word_start) {
             word_start = current_result;
@@ -152,6 +153,13 @@ size_t str_len(const char *text) {
     while (text[c] != '\0')
         ++c;
     return c;
+}
+
+void swap_char(char &a, char &b)
+{
+    char c(a);
+    a = b;
+    b = c;
 }
 
 void reset_stream(std::ifstream &stream, const std::streampos start_pos) {
