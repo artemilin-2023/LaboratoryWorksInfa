@@ -120,31 +120,32 @@ char *replace_symbols_in_longest_words(const char *input) {
     char *word_start = NULL;
 
     do {
-        if (isspace(*(input)) || !*(input)) {
-            // we don't want it to be null, duh
+        if (isspace(*(input)) || *input == '\0') {
+            // a word ended
             if (word_start && input - word_start > longest_word)
                 longest_word = input - word_start;
-                word_start = NULL;
+            word_start = NULL;
         } else if (!word_start) {
+            // started new word
             word_start = (char *) input;
         }
 
         *current_result++ = *input++;
-    } while (*input);
-    
+    } while (*(input-1));
+
     current_result = result;
     do {
         if (isspace(*(current_result)) || !*(current_result)) {
-            // we don't want it to be null, duh
+            // a word ended
             if (word_start && current_result - word_start == longest_word)
                 swap_char(*word_start, *(current_result-1));
             word_start = NULL;
         } else if (!word_start) {
+            // started new word
             word_start = current_result;
         }
         current_result++;
-    } while (*current_result);
-    std::cout << longest_word << '\n';
+    } while (*(current_result-1));
     return result;
 }
 
