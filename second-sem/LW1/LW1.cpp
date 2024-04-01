@@ -17,11 +17,6 @@
 #include <filesystem>
 #include <fstream>
 
-const char TEST_CASE[] = "test.txt";
-const char TESTS_FOLDER_NAME[] = "tests";
-
-const std::string PATH_TO_TEST = ((std::filesystem::current_path() /= TESTS_FOLDER_NAME) /= TEST_CASE).string();
-
 size_t str_len(const char *text);  // our own ffs
 void swap_char(char &a, char &b);  // same
 void reset_stream(std::ifstream &stream, const std::streampos start_pos);
@@ -29,14 +24,19 @@ bool validate_format(std::ifstream &in);
 char *remove_extra_white_spaces(const char *input);
 char *replace_symbols_in_longest_words(const char *input);
 
-int main() {
+int main(int argc, char **argv) {
+    if(argc == 1) {
+        std::cout << "Usage: " << argv[0] << " test_file" << '\n';
+        return 0;
+    }
+
     std::streamsize input_string_length;     // Ожидаемое количество символов в строке.
     char *input_string;                      // Считанный текст.
-    std::ifstream input_file(PATH_TO_TEST);  // Поток чтения из файла.
+    std::ifstream input_file(argv[1]);  // Поток чтения из файла.
 
     if (!input_file.is_open()) {
         std::cerr << "Ошибка открытия файла. Убедитесь, что по указанному пути существует файл: "
-                  << PATH_TO_TEST << '\n';
+                  << argv[1] << '\n';
         return -1;
     }
 
@@ -48,6 +48,11 @@ int main() {
     if (!validate_format(input_file)) {
         std::cerr << "В файле должны находиться длина строки и сама строка, разделенные только пробелом. Пример:\n";
         std::cerr << "13 Hello, world!\n";
+        std::cerr << "Исходный файл: \n";
+        char c;
+        while(input_file.get(c))
+            std::cerr << c;
+        std::cerr << '\n';
         return -3;
     }
 
@@ -70,6 +75,12 @@ int main() {
 
     if (input_file.fail()) {  // there are more symbols!!1
         std::cerr << "В файле больше символов, чем указано (должно быть " << input_string_length << ")!\n";
+        std::cerr << "Исходный файл: \n";
+        reset_stream(input_file, std::ios_base::beg);
+        char c;
+        while(input_file.get(c))
+            std::cerr << c;
+        std::cerr << '\n';
         return -5;
     }
     {
