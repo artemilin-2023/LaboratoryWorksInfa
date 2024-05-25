@@ -1,6 +1,6 @@
 # Project exclude paths
-<<<<<<< HEAD
 cmake-build-debug/
+[Bb]uild/
 **/*.exe
 !/[Tt]ests/
 
