@@ -3,3 +3,4 @@ project(LW)
 
 add_subdirectory(first-sem)
 add_subdirectory(second-sem)
+add_subdirectory(first-prac)
