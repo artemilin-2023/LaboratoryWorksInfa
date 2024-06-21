@@ -1,116 +1,252 @@
+// -*- coding: cp866 -*-
 /****************************************************************
- *                     –ö–ê–§–ï–î–†–ê ‚Ññ 304 1 –ö–£–†–°                      *
+ *                     äÄîÖÑêÄ ? 304 1 äìêë                      *
  *---------------------------------------------------------------*
  * Project Type  : Win32 Console Application                     *
  * Project Name  : LW1                                           *
  * File Name     : LW1.cpp                                       *
  * Language      : C/C++                                         *
- * Programmer(s) : –†–æ–º–∞–Ω–æ–≤ –î.–ò., –ò–ª—å–∏–Ω –ê.–ê                       *
+ * Programmer(s) : êÆ¨†≠Æ¢ Ñ.à., à´Ï®≠ Ä.Ä                       *
  * Created at    : 01/06/24                                      *
  * Last Revision : 05/06/24                                      *
- * Comment(s)    : –°—Ç—Ä–æ–∫–æ–≤—ã–µ –¥–∞–Ω–Ω—ã–µ                              *
+ * Comment(s)    : ë‚‡Æ™Æ¢Î• §†≠≠Î•                              *
  ****************************************************************/
 
 #define _USE_MATH_DEFINES
 
-#include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
-size_t MAX_FLIGHTS_LEN = 30;
-
+const size_t MAX_FLIGHTS_LEN = 50;
+const size_t CELL_WIDTH = 10;
 
 struct Flight {
     std::string model;
-    std::string boardNumber;
-    std::string landingTime;
+    std::string board_number;
+    std::string landing_time;
     std::string airport;
 };
 
 size_t parse_input_destructive(std::ifstream &stream, Flight *flights, size_t max_flights);
+void print_flights(Flight *flights, int n, int *ix);
 void reset_stream(std::ifstream &stream, const std::streampos start_pos);
 
-int main(int argc, char **argv) {
-    setlocale(LC_ALL, "866");
-    if(argc == 1) {
-        std::cout << "Usage: " << argv[0] << " test_file" << '\n';
-        return 0;
-    }
+void bubble_sort_i(Flight *flights, int n, int *ix) {
+    bool is_unsorted;
+    do { // if we can't find any unsorted elements, the array is sorted
+        is_unsorted = false;
+        for (int i = 0; i < (n - 1); i++) { // iterate until we find the first unsorted element
+            if (flights[ix[i]].landing_time > flights[ix[i + 1]].landing_time) {
+                is_unsorted = true;
+                for (; i < (n - 1); i++) {
+                    if (flights[ix[i]].landing_time > flights[ix[i + 1]].landing_time) {
+                        std::swap(ix[i], ix[i + 1]);
+                    }
+                }
+            }
+        }
+    } while (is_unsorted);
+}
 
-    std::ifstream input_file(argv[1]);  // –ü–æ—Ç–æ–∫ —á—Ç–µ–Ω–∏—è –∏–∑ —Ñ–∞–π–ª–∞.
+int main(int argc, char **argv) {
+    // if(argc == 1) {
+    //     std::cout << "à·ØÆ´ÏßÆ¢†≠®•: " << argv[0] << " test_file" << '\n';
+    //     return 0;
+    // }
+
+    std::ifstream input_file(argc == 1 ? "tests/test0.txt" : argv[1]); // èÆ‚Æ™ Á‚•≠®Ô ®ß ‰†©´†
 
     if (!input_file.is_open()) {
-        std::cerr << "–û—à–∏–±–∫–∞ –æ—Ç–∫—Ä—ã—Ç–∏—è —Ñ–∞–π–ª–∞. –£–±–µ–¥–∏—Ç–µ—Å—å, —á—Ç–æ –ø–æ —É–∫–∞–∑–∞–Ω–Ω–æ–º—É –ø—É—Ç–∏ —Å—É—â–µ—Å—Ç–≤—É–µ—Ç —Ñ–∞–π–ª: "
+        std::cerr << "éË®°™† Æ‚™‡Î‚®Ô ‰†©´†. ì°•§®‚•·Ï, Á‚Æ ØÆ „™†ß†≠≠Æ¨„ Ø„‚® ·„È•·‚¢„•‚ ‰†©´: "
                   << argv[1] << '\n';
         return -1;
     }
 
     if (input_file.peek() == EOF) {
-        std::cerr << "–§–∞–π–ª –ø—É—Å—Ç.\n";
+        std::cerr << "î†©´ Ø„·‚.\n";
         return -2;
     }
 
-    std::cout << "–ò—Å—Ö–æ–¥–Ω—ã–π —Ñ–∞–π–ª:\n";
+    std::cout << "à·ÂÆ§≠Î© ‰†©´:\n\"\"\"\n";
     std::cout << input_file.rdbuf();
-    std::cout << '\n';
+    std::cout << "\"\"\"\n";
     reset_stream(input_file, std::ios_base::beg);
 
-    Flight *flights;
+    Flight *flights = new Flight[MAX_FLIGHTS_LEN];
     size_t parsed_flights_len = parse_input_destructive(input_file, flights, MAX_FLIGHTS_LEN);
 
+    int *ix = new int[parsed_flights_len];
+    for (size_t i = 0; i < parsed_flights_len; i++)
+        ix[i] = i;
+
+    std::cout << "\ná†Ø®·® §Æ ·Æ‡‚®‡Æ¢™®\n";
+    print_flights(flights, parsed_flights_len, ix);
+
+    bubble_sort_i(flights, parsed_flights_len, ix);
+
+    std::cout << "\ná†Ø®·® ØÆ·´• ·Æ‡‚®‡Æ¢™®\n";
+    print_flights(flights, parsed_flights_len, ix);
 }
 
-// initializes flights, returns number of elements
+inline void print_err(size_t line_num, std::string reason) {
+    std::cerr << "éË®°™†! ë‚‡Æ™†:" << std::setw(4) << line_num << ". " << reason << "\n";
+}
+
+inline bool check_fail(
+    std::istream &stream, size_t line_num,
+    const std::string &reason = "ç•§Æ·‚†‚ÆÁ≠Æ §†≠≠ÎÂ: Ø‡•¶§•¢‡•¨•≠≠Æ §Æ·‚®£≠„‚ ™Æ≠•Ê ·‚‡Æ™®.") {
+    if (stream.fail()) {
+        std::cerr << '\n';
+        print_err(line_num, reason);
+        return true;
+    }
+    return false;
+}
+
+inline bool check_eof(
+    std::istream &stream, size_t line_num,
+    const std::string &reason = "ç•§Æ·‚†‚ÆÁ≠Æ §†≠≠ÎÂ: Ø‡•¶§•¢‡•¨•≠≠Æ §Æ·‚®£≠„‚ ™Æ≠•Ê ·‚‡Æ™®.") {
+    if (stream.eof()) {
+        std::cerr << '\n';
+        print_err(line_num, reason);
+        return true;
+    }
+    return false;
+}
+
+inline bool check_bad_board_number(const std::string &board_number) {
+    return board_number.length() != 6 ||
+           board_number[0] < 'Ä' || 'ü' < board_number[0] || // capital letter
+           board_number[1] != '-' ||
+           board_number[2] < '0' || '9' < board_number[2] || // digit
+           board_number[3] < '0' || '9' < board_number[3] || // digit
+           board_number[4] < '0' || '9' < board_number[4] || // digit
+           board_number[5] < '0' || '9' < board_number[5]    // digit
+        ;
+}
+
+inline bool check_bad_landing_time(const std::string &landing_time) {
+    return landing_time.length() != 5 ||
+           landing_time[0] < '0' || '2' < landing_time[0] ||    // first digit 0-2
+           landing_time[1] < '0' || '9' < landing_time[1] ||    // second digit 0-9
+           (landing_time[0] == '2' && '4' < landing_time[1]) || // special-case of second digit 0-4
+           landing_time[2] != ':' ||
+           landing_time[3] < '0' || '6' < landing_time[3] || // third digit 0-6
+           landing_time[4] < '0' || '9' < landing_time[4] || // fourth digit 0-9
+           (landing_time[3] == '6' && '0' < landing_time[4]) // special-case of fourth digit 0
+        ;
+}
+
+inline bool check_bad_airport(const std::string &airport) {
+    return airport.length() != 3 ||
+           airport[0] != 'Ä' ||
+           airport[1] != 'è' ||
+           airport[2] < '1' || '3' < airport[2];
+}
+
+// returns number of elements
 size_t parse_input_destructive(std::ifstream &stream, Flight *flights, size_t max_flights) {
-    flights = new Flight[max_flights];
     size_t i = 0, parsed = 0;
     std::string line;
-    while(std::getline(stream, line)) {
+    while (std::getline(stream, line)) {
         ++i;
-        std::cout << "–°—Ç—Ä–æ–∫–∞" << std::setw(4) << i << ": [" << line << "]\n";
-        std::string model, 
-            boardNumber,
-            landingTime,
-            airport;
-        std::istringstream iline(line);
-        iline >> model;
-        if(iline.fail()) { // empty input
-            std::cerr << "–û—à–∏–±–∫–∞! –°—Ç—Ä–æ–∫–∞:" << std::setw(4) << i << ". –ù–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ –¥–∞–Ω–Ω—ã—Ö: –ø—É—Å—Ç–∞—è —Å—Ç—Ä–æ–∫–∞.\n";
-            continue;
-        }
-        std::cout << "–ú–æ–¥–µ–ª—å: [" << model << "] ";
-        if(iline.eof()) { // no more data
-            std::cerr << "–û—à–∏–±–∫–∞! –°—Ç—Ä–æ–∫–∞:" << std::setw(4) << i << ". –ù–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ –¥–∞–Ω–Ω—ã—Ö: –ø—Ä–µ–∂–¥–µ–≤—Ä–µ–º–µ–Ω–Ω–æ –¥–æ—Å—Ç–∏–≥–Ω—É—Ç –∫–æ–Ω–µ—Ü —Å—Ç—Ä–æ–∫–∏.\n";
-            continue;
-        }
-        
-        iline >> boardNumber;
-        std::cout << "–ë–æ—Ä—Ç–æ–≤–æ–π –Ω–æ–º–µ—Ä: [" << boardNumber << "] ";
-        if(iline.eof()) { // no more data
-            std::cerr << "\n–û—à–∏–±–∫–∞! –°—Ç—Ä–æ–∫–∞:" << std::setw(4) << i << ". –ù–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ –¥–∞–Ω–Ω—ã—Ö: –ø—Ä–µ–∂–¥–µ–≤—Ä–µ–º–µ–Ω–Ω–æ –¥–æ—Å—Ç–∏–≥–Ω—É—Ç –∫–æ–Ω–µ—Ü —Å—Ç—Ä–æ–∫–∏.\n";
-            continue;
-        }
+        std::cout << "ƒƒƒƒƒƒƒƒƒƒ" << '\n';
+        std::cout << "ë‚‡Æ™†" << std::setw(4) << i << ": [" << line << "]\n";
+        std::string model, board_number, landing_time, airport;
 
-        iline >> landingTime;
-        std::cout << "–í—Ä–µ–º—è –ø–æ—Å–∞–¥–∫–∏: [" << landingTime << "] ";
-        if(iline.eof()) { // no more data
-            std::cerr << "\n–û—à–∏–±–∫–∞! –°—Ç—Ä–æ–∫–∞:" << std::setw(4) << i << ". –ù–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ –¥–∞–Ω–Ω—ã—Ö: –ø—Ä–µ–∂–¥–µ–≤—Ä–µ–º–µ–Ω–Ω–æ –¥–æ—Å—Ç–∏–≥–Ω—É—Ç –∫–æ–Ω–µ—Ü —Å—Ç—Ä–æ–∫–∏.\n";
+        std::istringstream iline(line);
+
+        iline >> model;
+        if (check_fail(iline, i, "ç•§Æ·‚†‚ÆÁ≠Æ §†≠≠ÎÂ: Ø„·‚†Ô ·‚‡Æ™†.")) // empty input
             continue;
-        }
-        
+        std::cout << "åÆ§•´Ï: [" << model << "] ";
+        if (check_eof(iline, i)) // no more data
+            continue;
+
+        iline >> board_number;
+        if (check_fail(iline, i)) // no more data
+            continue;
+        std::cout << "ÅÆ‡‚Æ¢Æ© ≠Æ¨•‡: [" << board_number << "] ";
+        if (check_eof(iline, i)) // no more data
+            continue;
+
+        iline >> landing_time;
+        if (check_fail(iline, i)) // no more data
+            continue;
+        std::cout << "Ç‡•¨Ô ØÆ·†§™®: [" << landing_time << "] ";
+        if (check_eof(iline, i)) // no more data
+            continue;
+
         iline >> airport;
-        if(iline.fail()) { // empty input
-            std::cerr << "\n–û—à–∏–±–∫–∞! –°—Ç—Ä–æ–∫–∞:" << std::setw(4) << i << ". –ù–µ–¥–æ—Å—Ç–∞—Ç–æ—á–Ω–æ –¥–∞–Ω–Ω—ã—Ö: –ø—É—Å—Ç–∞—è —Å—Ç—Ä–æ–∫–∞.\n";
+        if (check_fail(iline, i)) // no more data
             continue;
+        std::cout << "ÄÌ‡ÆØÆ‡‚: [" << airport << "]\n";
+        (iline >> std::ws).get(); // without trailing whitespace
+
+        bool any_error = false;
+        if (!iline.eof()) { // non-empty input, BUT still more data
+            print_err(i, "àß°Î‚Æ™ §†≠≠ÎÂ: ≠• §Æ·‚®£≠„‚ ™Æ≠•Ê ·‚‡Æ™®.");
+            any_error = true;
         }
-        std::cout << "–ê—ç—Ä–æ–ø–æ—Ä—Ç: [" << airport << "]\n";
-        if(!iline.eof()) { // non-empty input, BUT still more data
-            std::cerr << "–û—à–∏–±–∫–∞! –°—Ç—Ä–æ–∫–∞:" << std::setw(4) << i << ". –ò–∑–±—ã—Ç–æ–∫ –¥–∞–Ω–Ω—ã—Ö: –Ω–µ –¥–æ—Å—Ç–∏–≥–Ω—É—Ç –∫–æ–Ω–µ—Ü —Å—Ç—Ä–æ–∫–∏.\n";
+        // next: validate actual data
+        if (check_bad_board_number(board_number)) {
+            print_err(i, "ç•™Æ‡‡•™‚≠Î• §†≠≠Î•: ≠•™Æ‡‡•™‚≠Î© °Æ‡‚Æ¢Æ© ≠Æ¨•‡.");
+            any_error = true;
+        }
+        if (check_bad_landing_time(landing_time)) {
+            print_err(i, "ç•™Æ‡‡•™‚≠Î• §†≠≠Î•: ≠•™Æ‡‡•™‚≠Æ• ¢‡•¨Ô ØÆ·†§™®.");
+            any_error = true;
+        }
+        if (check_bad_airport(airport)) {
+            print_err(i, "ç•™Æ‡‡•™‚≠Î• §†≠≠Î•: ≠•™Æ‡‡•™‚≠Î© †Ì‡Æ§‡Æ¨.");
+            any_error = true;
+        }
+        if (any_error)
             continue;
-        }
+
+        flights[parsed++] = {model, board_number, landing_time, airport};
     }
+    std::cout << "ƒƒƒƒƒƒƒƒƒƒ" << '\n';
     return parsed;
+}
+
+void print_table_line(std::ostream &output, const std::string &left_border, const std::string &line,
+                      const std::string &divider, const std::string &right_border,
+                      int cell_amount = 5, int cell_width = CELL_WIDTH) {
+    output << left_border;
+    for (size_t cell_i = 0; cell_i < cell_amount; ++cell_i) {
+        for (size_t i = 0; i < cell_width; ++i)
+            std::cout << line;
+        if (cell_i < cell_amount - 1)
+            output << divider;
+    }
+
+    output << right_border << '\n';
+}
+
+void print_flights(Flight *flights, int n, int *ix) {
+    print_table_line(std::cout, "…", "Õ", "—", "ª");
+    std::cout << "∫" << std::setw(CELL_WIDTH) << "i" << "≥" << std::setw(CELL_WIDTH) << "å†‡™† ãÄ"
+              << "≥" << std::setw(CELL_WIDTH) << "ÅÆ‡‚.≠Æ¨•‡" << "≥" << std::setw(CELL_WIDTH)
+              << "Ç‡.ØÆ·." << "≥" << std::setw(CELL_WIDTH) << "ÄÌ‡Æ§‡Æ¨" << "∫" << '\n';
+
+    print_table_line(std::cout, "Ã", "Õ", "ÿ", "π");
+
+    for (size_t i = 0; i < n; ++i) {
+        Flight flight = flights[ix[i]];
+
+        if (i % 3 == 0 && i != 0) // ä†¶§†Ô ‚‡•‚ÏÔ ·‚‡Æ™† ‚†°´®ÊÎ Æ‚Á•‡Á®¢†•‚·Ô ´®≠®•©
+            print_table_line(std::cout, "«", "ƒ", "≈", "∂");
+
+        std::cout << "∫" << std::setw(CELL_WIDTH) << i << "≥" << std::setw(CELL_WIDTH)
+                  << flight.model << "≥" << std::setw(CELL_WIDTH) << flight.board_number << "≥"
+                  << std::setw(CELL_WIDTH) << flight.landing_time << "≥" << std::setw(CELL_WIDTH)
+                  << flight.airport << "∫" << '\n';
+    }
+
+    print_table_line(std::cout, "»", "Õ", "œ", "º");
 }
 
 void reset_stream(std::ifstream &stream, const std::streampos start_pos) {

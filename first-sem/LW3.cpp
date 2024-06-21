@@ -63,8 +63,8 @@ int main()
     double positive_nums_sum = 0; // сумма положительных чисел
     double last_n_elements_sum = 0; // сумма последних N элементов
 
-    double min_value = INT_MAX; // минимальное число
-    double max_value = INT_MIN; // максимальное число
+    double min_value = 1024*1024; // минимальное число
+    double max_value = 0; // максимальное число
     int pos_min = 0; // позиция минимального числа
     int pos_max = 0; // позиция максимального числа
 
