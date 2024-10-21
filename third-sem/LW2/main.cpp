@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <iostream>
 #include <random>
+#include <fstream>
+#include <filesystem>
 
 #include "types.h"
 #include "helpers.h"
@@ -34,21 +36,32 @@ const int array_sizes[] = {
         200000,
 };
 
-void perform_searches_and_save(int* array, int array_size, const std::vector<search_with_name>& search_pack) {
+void perform_searches_and_save(int* array, int array_size, const std::vector<search_with_name>& search_pack, const std::string& pack_name) {
     const std::vector<std::pair<int, std::string>> needles = {{10, "start"}, {array_size - 10, "end"}, {array_size / 2, "middle"}};
+
+    auto outp_path = (std::filesystem::path("out")/pack_name/std::to_string(array_size)).replace_extension(".txt");
+    std::filesystem::create_directories(outp_path.parent_path());
+    std::ofstream fout(outp_path);
+    fout << array_size;
+    for (const auto& [_, needle_name]: needles) {
+        fout << '|' << needle_name << " timing (ns)" << '|' << needle_name << " comparisons";
+    }
+    fout << '|' << "random" << " timing (ns)" << '|' << "random" << " comparisons" << '\n';
+
     for (const auto &current_search : search_pack) {
-        for (const auto& [needle_i, needle_name]: needles) {
+        fout << current_search.name;
+        for (const auto& [needle_i, _]: needles) {
             int needle = array[needle_i];
             int* fixed_array = remove_number_from_array(array, array_size, needle);
             fixed_array[needle_i] = needle;
             search_result sort_result = current_search.func(fixed_array, array_size, needle);
-            // TODO: SAVE TO FILE
+            fout << '|' << std::chrono::duration_cast<std::chrono::nanoseconds>(sort_result.time_taken).count() << '|' << sort_result.comparison_count;
             delete[] fixed_array;
         }
         int needle = 42; // not in the loop because we don't need to put the number back in
         int* fixed_array = remove_number_from_array(array, array_size, needle);
         search_result sort_result = current_search.func(array, array_size, needle);
-        // TODO: SAVE TO FILE
+        fout << '|' << std::chrono::duration_cast<std::chrono::nanoseconds>(sort_result.time_taken).count() << '|' << sort_result.comparison_count << '\n';
         delete[] fixed_array;
     }
 }
@@ -67,6 +80,9 @@ int main() {
             MAKE_FUNCTION_NAME_PAIR(binary_search),
     };
 #undef MAKE_FUNCTION_NAME_PAIR
+
+    std::cout << "Current path is " << std::filesystem::current_path()
+         << std::endl;
 
     // first, we're generating an unsorted array
     // then, we're testing it with each unsorted search:
@@ -87,10 +103,10 @@ int main() {
 
     for (auto array_size: array_sizes) {
         int *array = generate_array(array_size, -array_size, array_size, gen);
-        perform_searches_and_save(array, array_size, unsorted_searches);
+        perform_searches_and_save(array, array_size, unsorted_searches, "unsorted");
 
         std::sort(array, array + array_size);
-        perform_searches_and_save(array, array_size, sorted_searches);
+        perform_searches_and_save(array, array_size, sorted_searches, "sorted");
         delete[] array;
     }
 

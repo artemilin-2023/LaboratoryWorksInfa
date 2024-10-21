@@ -8,11 +8,7 @@
 
 
 // creates an array of given length filled with random integers from interval
-template<class RNG>
-int *generate_array(int length, int min, int max, RNG &gen) {
-//    std::random_device rd; // hardware rng
-//    std::mt19937 gen(rd()); // pseudo-rng (but not really since we're using rd)
-
+int *generate_array(int length, int min, int max, std::mt19937 gen) {
     std::uniform_int_distribution<int> dist(min, max);
 
     int *arr = new int[length];

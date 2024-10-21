@@ -5,8 +5,7 @@
 #ifndef LW_HELPERS_H
 #define LW_HELPERS_H
 
-template<class RNG>
-int *generate_array(int length, int min, int max, RNG &gen);
+int *generate_array(int length, int min, int max, std::mt19937 gen);
 
 int *remove_number_from_array(int *array, int length, int number_to_remove);
 

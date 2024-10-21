@@ -8,7 +8,7 @@
 search_result timed_better_linear_search(int *array, int size, int needle) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    ...
+    //...
 
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -18,9 +18,9 @@ search_result timed_better_linear_search(int *array, int size, int needle) {
 search_result counted_better_linear_search(int *array, int size, int needle) {
     long comparison_count = 0;
 
-    ...
+    //...
 
-    return {0, comparison_count};
+    return {std::chrono::high_resolution_clock::duration(0), comparison_count};
 }
 
 search_result better_linear_search(int *array, int size, int needle) {
@@ -32,7 +32,7 @@ search_result better_linear_search(int *array, int size, int needle) {
 search_result timed_sentinel_linear_search(int *array, int size, int needle) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    ...
+//    ...
 
     auto end = std::chrono::high_resolution_clock::now();
     return {end - start, 0};
@@ -41,9 +41,9 @@ search_result timed_sentinel_linear_search(int *array, int size, int needle) {
 search_result counted_sentinel_linear_search(int *array, int size, int needle) {
     long comparison_count = 0;
 
-    ...
+//    ...
 
-    return {0, comparison_count};
+    return {std::chrono::high_resolution_clock::duration(0), comparison_count};
 }
 
 search_result sentinel_linear_search(int *array, int size, int needle) {
@@ -55,7 +55,7 @@ search_result sentinel_linear_search(int *array, int size, int needle) {
 search_result timed_ordered_array_search(int *array, int size, int needle) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    ...
+//    ...
 
     auto end = std::chrono::high_resolution_clock::now();
     return {end - start, 0};
@@ -70,7 +70,7 @@ search_result ordered_array_search(int *array, int size, int needle) {
 search_result timed_binary_search(int *array, int size, int needle) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    ...
+//    ...
 
     auto end = std::chrono::high_resolution_clock::now();
     return {end - start, 0};
