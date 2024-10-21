@@ -110,35 +110,5 @@ int main() {
         delete[] array;
     }
 
-
-//    for (auto& intFunc : intFuncs) { // Создание массивов и запись в файл для целочисленных функций
-//        IntPoint* arr = GenerateArray(START_X, COUNT_X, intFunc);
-//        WriteArrayToFile(arr, COUNT_X - 1, GetFilename());
-//    }
-//
-//    for (auto& doubleFunc : doubleFuncs) { // Создание массивов и запись в файл для десятичных  функций
-//        DoublePoint* arr = GenerateArray(START_X, COUNT_X, STEP_X, doubleFunc);
-//        WriteArrayToFile(arr, COUNT_X - 1, GetFilename());
-//    }
-//    ofstream fout(GetFilename());
-//    for (auto& f : intFuncs) { // Измерение времени создания целочисленных последовательностей
-//        //ofstream fout(GetFilename());
-//        for (auto& size : array_sizes) {
-//            fout << fixed << setprecision(3) << GetAverageExecutionTime(f, size) << ' ';
-//        }
-//        fout << endl;
-//    }
-//    fout.close();
-//    ofstream fout2(GetFilename());
-//    for (auto& f : doubleFuncs) { // Измерение времени создания вещественных последовательностей
-//        //ofstream fout(GetFilename());
-//        for (auto& size : array_sizes) {
-//            fout2 << fixed << setprecision(3) << GetAverageExecutionTimefordouble(f, STEP_X, size) << ' ';
-//        }
-//        fout2 << endl;
-//        //fout.close();
-//    }
-//    fout2.close();
-
     return 0;
 }
