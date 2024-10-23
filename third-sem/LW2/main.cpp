@@ -22,7 +22,7 @@
 #include "helpers.h"
 #include "searches.h"
 
-const int array_sizes[] = {
+const long array_sizes[] = {
         10000,
         29000,
         48000,
@@ -36,12 +36,12 @@ const int array_sizes[] = {
         200000,
 };
 
-void perform_searches_and_save(int const *const array, int array_size, const std::vector<search_with_name> &search_pack,
+void perform_searches_and_save(int const *const array, long array_size, const std::vector<search_with_name> &search_pack,
                                const std::string &pack_name) {
     const std::vector<needle_def> needles = {
-            {array[array_size / 8],              array_size / 8,              true,  "start"},
-            {array[array_size / 2],  array_size / 2,  true,  "middle"},
-            {array[array_size * 7 / 8], array_size * 7 / 8, true,  "end"},
+            {array[array_size/10 + 1984],              array_size/10 + 1984,              true,  "start"},
+            {array[array_size * 4/10 + 1984],  array_size * 4/10 + 1984,  true,  "middle"},
+            {array[array_size * 9/10 - 1984], array_size * 9/10 - 1984, true,  "end"},
             {42,                     -1,              false, "doesn't exist"},
     };
 
@@ -56,15 +56,15 @@ void perform_searches_and_save(int const *const array, int array_size, const std
     }
     fout << '\n';
 
-    std::cout << "##Started " << pack_name << " sorts" << '\n';
+    std::cout << "##Started " << pack_name << " sorts with size " << array_size << '\n';
     for (const auto &needle: needles) {
         fout << needle.name;
         std::unique_ptr<int[]> fixed_array(remove_number_from_array(array, array_size, needle.needle));
         if (needle.should_restore_needle)
-            fixed_array[needle.needle_index] = needle.needle;
+            fixed_array[needle.correct_index] = needle.needle;
         for (const auto &current_search: search_pack) {
             std::cout << "#Started " << current_search.name << " with the \"" << needle.name << "\" needle" << '\n';
-            search_result sort_result = current_search.func(fixed_array.get(), array_size, needle.needle);
+            search_result sort_result = current_search.func(fixed_array.get(), array_size, needle.needle, needle.correct_index);
             std::cout << "!Finished " << current_search.name
                       << ". It took " << std::chrono::duration_cast<std::chrono::milliseconds>(sort_result.time_taken).count() << "ms"
                       << " and " << sort_result.comparison_count << " comparisons" << '\n';

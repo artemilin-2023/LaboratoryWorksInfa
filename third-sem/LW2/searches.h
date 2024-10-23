@@ -9,12 +9,12 @@
 #include "types.h"
 
 
-search_result better_linear_search(int const *array, int size, int needle);
+search_result better_linear_search(int const *array, int size, int needle, int correct_index);
 
-search_result sentinel_linear_search(int const *array, int size, int needle);
+search_result sentinel_linear_search(int const *array, int size, int needle, int correct_index);
 
-search_result ordered_array_search(int const *array, int size, int needle);
+search_result ordered_array_search(int const *array, int size, int needle, int correct_index);
 
-search_result binary_search(int const *array, int size, int needle);
+search_result binary_search(int const *array, int size, int needle, int correct_index);
 
 #endif //LW_SEARCHES_H
