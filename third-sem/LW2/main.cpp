@@ -39,9 +39,9 @@ const int array_sizes[] = {
 void perform_searches_and_save(int const *const array, int array_size, const std::vector<search_with_name> &search_pack,
                                const std::string &pack_name) {
     const std::vector<needle_def> needles = {
-            {array[10],              10,              true,  "start"},
+            {array[array_size / 8],              array_size / 8,              true,  "start"},
             {array[array_size / 2],  array_size / 2,  true,  "middle"},
-            {array[array_size - 10], array_size - 10, true,  "end"},
+            {array[array_size * 7 / 8], array_size * 7 / 8, true,  "end"},
             {42,                     -1,              false, "doesn't exist"},
     };
 
