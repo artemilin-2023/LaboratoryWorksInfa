@@ -96,12 +96,16 @@ search_result sentinel_linear_search(int const *const array, int size, int needl
 
 
 auto timed_ordered_array_search(int const *const array, int size, int needle) {
+    // idc the reason behind this being its own "algorithm" but honestly idc
     auto start = hrc::now();
 
-//    ...
-
-    auto end = hrc::now();
-    return end - start;
+    for (int i = 0; i < size; ++i) {
+        if (array[i] == needle)
+            // found
+            return hrc::now() - start;
+    }
+    // not found
+    return hrc::now() - start;
 }
 
 search_result ordered_array_search(int const *const array, int size, int needle) {
