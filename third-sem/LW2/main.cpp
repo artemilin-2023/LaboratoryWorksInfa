@@ -40,8 +40,8 @@ void perform_searches_and_save(int const *const array, int array_size, const std
                                const std::string &pack_name) {
     const std::vector<needle_def> needles = {
             {array[10],              10,              true,  "start"},
-            {array[array_size - 10], array_size - 10, true,  "end"},
             {array[array_size / 2],  array_size / 2,  true,  "middle"},
+            {array[array_size - 10], array_size - 10, true,  "end"},
             {42,                     -1,              false, "doesn't exist"},
     };
 
@@ -56,18 +56,25 @@ void perform_searches_and_save(int const *const array, int array_size, const std
     }
     fout << '\n';
 
+    std::cout << "##Started " << pack_name << " sorts" << '\n';
     for (const auto &needle: needles) {
         fout << needle.name;
         std::unique_ptr<int[]> fixed_array(remove_number_from_array(array, array_size, needle.needle));
         if (needle.should_restore_needle)
             fixed_array[needle.needle_index] = needle.needle;
         for (const auto &current_search: search_pack) {
+            std::cout << "#Started " << current_search.name << " with the \"" << needle.name << "\" needle" << '\n';
             search_result sort_result = current_search.func(fixed_array.get(), array_size, needle.needle);
+            std::cout << "!Finished " << current_search.name
+                      << ". It took " << std::chrono::duration_cast<std::chrono::milliseconds>(sort_result.time_taken).count() << "ms"
+                      << " and " << sort_result.comparison_count << " comparisons" << '\n';
             fout << '|' << std::chrono::duration_cast<std::chrono::nanoseconds>(sort_result.time_taken).count() << '|'
                  << sort_result.comparison_count;
         }
+
         fout << '\n';
     }
+    std::cout << "!!Finished " << pack_name << " sorts" << '\n';
 }
 
 int main() {
