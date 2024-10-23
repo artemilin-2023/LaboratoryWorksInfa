@@ -59,7 +59,8 @@ void perform_searches_and_save(int const *const array, long array_size, const st
     std::cout << "##Started " << pack_name << " sorts with size " << array_size << '\n';
     for (const auto &needle: needles) {
         fout << needle.name;
-        std::unique_ptr<int[]> fixed_array(remove_number_from_array(array, array_size, needle.needle));
+        std::unique_ptr<int[]> fixed_array(remove_number_from_array(array, array_size, needle.needle, needle.correct_index));
+
         if (needle.should_restore_needle)
             fixed_array[needle.correct_index] = needle.needle;
         for (const auto &current_search: search_pack) {
@@ -79,7 +80,9 @@ void perform_searches_and_save(int const *const array, long array_size, const st
 
 int main() {
     std::random_device rd;
-    std::mt19937 gen(rd());
+    auto random_number = rd();
+//    unsigned random_number = 150444277;
+    std::mt19937 gen(random_number);
 
 #define MAKE_FUNCTION_NAME_PAIR(func) {func, #func}
     const std::vector<search_with_name> unsorted_searches = {
@@ -92,8 +95,8 @@ int main() {
     };
 #undef MAKE_FUNCTION_NAME_PAIR
 
-    std::cout << "Current path is " << std::filesystem::current_path()
-              << std::endl;
+    std::cout << "Current path is " << std::filesystem::current_path() << '\n'
+              << "Random seed is: " << random_number << '\n';
 
     // first, we're generating an unsorted array
     // then, we're testing it with each unsorted search:
