@@ -20,9 +20,9 @@ int *generate_array(int length, int min, int max, std::mt19937 gen) {
 }
 
 // returns a copied array with this number replaced with a previous one
-int *remove_number_from_array(int *array, int length, int number_to_remove) {
-    int* fixed_array = new int[length];
-    std::copy(array, array+length, fixed_array);
+int *remove_number_from_array(int const *const array, int length, int number_to_remove) {
+    int *fixed_array = new int[length];
+    std::copy(array, array + length, fixed_array);
 
     if (fixed_array[0] == number_to_remove)
         fixed_array[0] = 0;

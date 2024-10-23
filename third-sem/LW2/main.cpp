@@ -36,33 +36,37 @@ const int array_sizes[] = {
         200000,
 };
 
-void perform_searches_and_save(int* array, int array_size, const std::vector<search_with_name>& search_pack, const std::string& pack_name) {
-    const std::vector<std::pair<int, std::string>> needles = {{10, "start"}, {array_size - 10, "end"}, {array_size / 2, "middle"}};
+void perform_searches_and_save(int const *const array, int array_size, const std::vector<search_with_name> &search_pack,
+                               const std::string &pack_name) {
+    const std::vector<needle_def> needles = {
+            {array[10],              10,              true,  "start"},
+            {array[array_size - 10], array_size - 10, true,  "end"},
+            {array[array_size / 2],  array_size / 2,  true,  "middle"},
+            {42,                     -1,              false, "doesn't exist"},
+    };
 
-    auto outp_path = (std::filesystem::path("out")/pack_name/std::to_string(array_size)).replace_extension(".txt");
-    std::filesystem::create_directories(outp_path.parent_path());
-    std::ofstream fout(outp_path);
+    auto output_path = (std::filesystem::path("results") / pack_name / std::to_string(array_size)).replace_extension(
+            ".txt");
+    std::filesystem::create_directories(output_path.parent_path());
+    std::ofstream fout(output_path);
     fout << array_size;
-    for (const auto& [_, needle_name]: needles) {
-        fout << '|' << needle_name << " timing (ns)" << '|' << needle_name << " comparisons";
-    }
-    fout << '|' << "random" << " timing (ns)" << '|' << "random" << " comparisons" << '\n';
 
-    for (const auto &current_search : search_pack) {
-        fout << current_search.name;
-        for (const auto& [needle_i, _]: needles) {
-            int needle = array[needle_i];
-            int* fixed_array = remove_number_from_array(array, array_size, needle);
-            fixed_array[needle_i] = needle;
-            search_result sort_result = current_search.func(fixed_array, array_size, needle);
-            fout << '|' << std::chrono::duration_cast<std::chrono::nanoseconds>(sort_result.time_taken).count() << '|' << sort_result.comparison_count;
-            delete[] fixed_array;
+    for (const auto &current_search: search_pack) {
+        fout << '|' << current_search.name << " timing (ns)" << '|' << current_search.name << " comparisons";
+    }
+    fout << '\n';
+
+    for (const auto &needle: needles) {
+        fout << needle.name;
+        std::unique_ptr<int[]> fixed_array(remove_number_from_array(array, array_size, needle.needle));
+        if (needle.should_restore_needle)
+            fixed_array[needle.needle_index] = needle.needle;
+        for (const auto &current_search: search_pack) {
+            search_result sort_result = current_search.func(fixed_array.get(), array_size, needle.needle);
+            fout << '|' << std::chrono::duration_cast<std::chrono::nanoseconds>(sort_result.time_taken).count() << '|'
+                 << sort_result.comparison_count;
         }
-        int needle = 42; // not in the loop because we don't need to put the number back in
-        int* fixed_array = remove_number_from_array(array, array_size, needle);
-        search_result sort_result = current_search.func(array, array_size, needle);
-        fout << '|' << std::chrono::duration_cast<std::chrono::nanoseconds>(sort_result.time_taken).count() << '|' << sort_result.comparison_count << '\n';
-        delete[] fixed_array;
+        fout << '\n';
     }
 }
 
@@ -82,7 +86,7 @@ int main() {
 #undef MAKE_FUNCTION_NAME_PAIR
 
     std::cout << "Current path is " << std::filesystem::current_path()
-         << std::endl;
+              << std::endl;
 
     // first, we're generating an unsorted array
     // then, we're testing it with each unsorted search:

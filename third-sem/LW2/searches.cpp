@@ -5,78 +5,84 @@
 #include "searches.h"
 
 
-search_result timed_better_linear_search(int *array, int size, int needle) {
-    auto start = std::chrono::high_resolution_clock::now();
+using hrc = std::chrono::high_resolution_clock;
 
-    //...
 
-    auto end = std::chrono::high_resolution_clock::now();
+auto timed_better_linear_search(int const *const array, int size, int needle) {
+    auto start = hrc::now();
 
-    return {end - start, 0};
+    for (int i = 0; i < size; ++i) {
+        if (array[i] == needle)
+            return hrc::now() - start;
+    }
+
+    return hrc::now() - start;
 }
 
-search_result counted_better_linear_search(int *array, int size, int needle) {
+long counted_better_linear_search(int const *const array, int size, int needle) {
     long comparison_count = 0;
 
-    //...
+    for (int i = 0; i < size; ++i) {
+        comparison_count++;
+        if (array[i] == needle)
+            return comparison_count;
+    }
 
-    return {std::chrono::high_resolution_clock::duration(0), comparison_count};
+    return comparison_count;
 }
 
-search_result better_linear_search(int *array, int size, int needle) {
-    return {timed_better_linear_search(array, size, needle).time_taken,
-            counted_better_linear_search(array, size, needle).comparison_count};
+search_result better_linear_search(int const *const array, int size, int needle) {
+    return {timed_better_linear_search(array, size, needle),
+            counted_better_linear_search(array, size, needle)};
 };
 
 
-search_result timed_sentinel_linear_search(int *array, int size, int needle) {
-    auto start = std::chrono::high_resolution_clock::now();
+auto timed_sentinel_linear_search(int const *const array, int size, int needle) {
+    auto start = hrc::now();
 
 //    ...
 
-    auto end = std::chrono::high_resolution_clock::now();
-    return {end - start, 0};
+    auto end = hrc::now();
+    return end - start;
 }
 
-search_result counted_sentinel_linear_search(int *array, int size, int needle) {
+long counted_sentinel_linear_search(int const *const array, int size, int needle) {
     long comparison_count = 0;
 
 //    ...
 
-    return {std::chrono::high_resolution_clock::duration(0), comparison_count};
+    return comparison_count;
 }
 
-search_result sentinel_linear_search(int *array, int size, int needle) {
-    return {timed_sentinel_linear_search(array, size, needle).time_taken,
-            counted_sentinel_linear_search(array, size, needle).comparison_count};
+search_result sentinel_linear_search(int const *const array, int size, int needle) {
+    return {timed_sentinel_linear_search(array, size, needle),
+            counted_sentinel_linear_search(array, size, needle)};
 };
 
 
-search_result timed_ordered_array_search(int *array, int size, int needle) {
-    auto start = std::chrono::high_resolution_clock::now();
+auto timed_ordered_array_search(int const *const array, int size, int needle) {
+    auto start = hrc::now();
 
 //    ...
 
-    auto end = std::chrono::high_resolution_clock::now();
-    return {end - start, 0};
+    auto end = hrc::now();
+    return end - start;
 }
 
-search_result ordered_array_search(int *array, int size, int needle) {
-    return {timed_sentinel_linear_search(array, size, needle).time_taken,
-            0};
+search_result ordered_array_search(int const *const array, int size, int needle) {
+    return {timed_ordered_array_search(array, size, needle), 0};
 };
 
 
-search_result timed_binary_search(int *array, int size, int needle) {
-    auto start = std::chrono::high_resolution_clock::now();
+auto timed_binary_search(int const *const array, int size, int needle) {
+    auto start = hrc::now();
 
 //    ...
 
-    auto end = std::chrono::high_resolution_clock::now();
-    return {end - start, 0};
+    auto end = hrc::now();
+    return end - start;
 }
 
-search_result binary_search(int *array, int size, int needle) {
-    return {timed_sentinel_linear_search(array, size, needle).time_taken,
-            counted_sentinel_linear_search(array, size, needle).comparison_count};
+search_result binary_search(int const *const array, int size, int needle) {
+    return {timed_binary_search(array, size, needle), 0};
 };
