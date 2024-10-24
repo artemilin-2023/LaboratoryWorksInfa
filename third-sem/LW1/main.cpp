@@ -22,7 +22,7 @@
 #define COUNT_X 100 // Количество элементов в массиве
 #define STEP_X 0.1 // Шаг X для дробных функций
 
-const int arraySizes[] = {
+const int array_sizes[] = {
     5  * 100000,
     10 * 100000,
     15 * 100000,
@@ -56,7 +56,7 @@ int main()
     ofstream fout(GetFilename());
     for (auto& f : intFuncs) { // Измерение времени создания целочисленных последовательностей
         //ofstream fout(GetFilename());
-        for (auto& size : arraySizes) {
+        for (auto& size : array_sizes) {
             fout << fixed << setprecision(3) << GetAverageExecutionTime(f, size) << ' ';
         }
         fout << endl;
@@ -65,7 +65,7 @@ int main()
     ofstream fout2(GetFilename());
     for (auto& f : doubleFuncs) { // Измерение времени создания вещественных последовательностей
         //ofstream fout(GetFilename());
-        for (auto& size : arraySizes) {
+        for (auto& size : array_sizes) {
             fout2 << fixed << setprecision(3) << GetAverageExecutionTimefordouble(f, STEP_X, size) << ' ';
         }
         fout2 << endl;
