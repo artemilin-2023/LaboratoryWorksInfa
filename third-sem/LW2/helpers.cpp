@@ -19,9 +19,8 @@ int *generate_array(int length, int min, int max, std::mt19937 &gen) {
     return arr;
 }
 
-// returns a copied array with this number replaced with a previous one
-int *remove_number_from_array(int const *const array, int length, int number_to_remove, int index_to_remove) {
-    int *fixed_array = new int[length];
+// replaces fixed_array with array with this number replaced with an adjacent one
+int *remove_number_from_array(int const *const array, int *fixed_array, int length, int number_to_remove, int index_to_remove) {
     std::copy(array, array + length, fixed_array);
 
     if (fixed_array[0] == number_to_remove)

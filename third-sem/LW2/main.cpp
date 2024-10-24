@@ -59,7 +59,8 @@ void perform_searches_and_save(int const *const array, long array_size, const st
     std::cout << "##Started " << pack_name << " sorts with size " << array_size << '\n';
     for (const auto &needle: needles) {
         fout << needle.name;
-        std::unique_ptr<int[]> fixed_array(remove_number_from_array(array, array_size, needle.needle, needle.correct_index));
+        auto fixed_array = std::make_unique_for_overwrite<int[]>(array_size);
+        remove_number_from_array(array, fixed_array.get(), array_size, needle.needle, needle.correct_index);
 
         if (needle.should_restore_needle)
             fixed_array[needle.correct_index] = needle.needle;
