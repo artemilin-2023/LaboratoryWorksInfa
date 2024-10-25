@@ -3,6 +3,9 @@ add_executable(LW3-3
         helpers.cpp
         helpers.h
         types.h
-        sorts.cpp
         sorts.h
+        sorts/selection_sort.cpp
+        sorts/quick_sort_last.cpp
+        sorts/quick_sort_median_of_3.cpp
+        sorts/quick_sort_hoare.cpp
 )

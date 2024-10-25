@@ -12,7 +12,7 @@ sort_result selection_sort(int const *array, int size, int const *sorted_array);
 
 sort_result quick_sort_last(int const *array, int size, int const *sorted_array);
 
-sort_result quick_sort_median(int const *array, int size, int const *sorted_array);
+sort_result quick_sort_median_of_3(int const *array, int size, int const *sorted_array);
 
 sort_result quick_sort_hoare(int const *array, int size, int const *sorted_array);
 

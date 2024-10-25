@@ -23,6 +23,7 @@
 #include "sorts.h"
 
 const long array_sizes[] = {
+        5,
         500,
         1000,
         10000,
@@ -52,7 +53,7 @@ void perform_searches_and_save(int const *const array, long array_size, const st
     for (const auto &current_sort: sort_pack) {
         std::cout << "#Started " << current_sort.name << '\n';
         sort_result sort_result = current_sort.func(array, array_size, sorted_array.get());
-        std::cout << "!Finished " << current_sort.name
+        std::cout << "!Finished " << pack_name << ' ' << current_sort.name
                   << ". It took "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(sort_result.time_taken).count() << "ms"
                   << ", " << sort_result.comparison_count << " comparisons"
@@ -75,7 +76,7 @@ int main() {
     const std::vector<sort_with_name> sorts = {
             MAKE_FUNCTION_NAME_PAIR(selection_sort),
             MAKE_FUNCTION_NAME_PAIR(quick_sort_last),
-            MAKE_FUNCTION_NAME_PAIR(quick_sort_median),
+            MAKE_FUNCTION_NAME_PAIR(quick_sort_median_of_3),
             MAKE_FUNCTION_NAME_PAIR(quick_sort_hoare),
     };
 #undef MAKE_FUNCTION_NAME_PAIR

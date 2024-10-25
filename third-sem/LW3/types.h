@@ -17,8 +17,8 @@ struct needle_def {
 
 struct sort_result {
     std::chrono::high_resolution_clock::duration time_taken;
-    long comparison_count;
-    long swap_count;
+    long long comparison_count;
+    long long swap_count;
 };
 
 typedef sort_result (*int_sort_func)(int const *const array, int size, int const *const sorted_array);

@@ -4,7 +4,6 @@
 
 #include <random>
 #include <algorithm>
-#include <unordered_map>
 #include "helpers.h"
 
 
@@ -21,20 +20,8 @@ int *generate_array(int length, int min, int max, std::mt19937 &gen) {
 }
 
 bool check_arrays_equal(const int *const arr1, const int *const arr2, int size) {
-    std::unordered_map<int, int> mp;
-    for (int i = 0; i < size; i++)
-        mp[arr1[i]]++; // count elems in arr1
-
-    for (int i = 0; i < size; i++) {
-        if (mp.find(arr2[i]) == mp.end())
-            // element in arr 2 that's not in arr1
+    for (int i = 0; i < size; ++i)
+        if (arr1[i] != arr2[i])
             return false;
-
-        if (mp[arr2[i]] == 0)
-            // more elems in arr2 than in arr1
-            return false;
-
-        mp[arr2[i]]--;
-    }
     return true;
 }
