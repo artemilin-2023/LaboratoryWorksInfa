@@ -20,16 +20,17 @@ int *generate_array(int length, int min, int max, std::mt19937 &gen) {
 }
 
 // replaces fixed_array with array with this number replaced with an adjacent one
-int *remove_number_from_array(int const *const array, int *fixed_array, int length, int number_to_remove, int index_to_remove) {
+int *remove_number_from_array(int const *const array, int *fixed_array, int length, int number_to_remove,
+                              int index_to_remove) {
     std::copy(array, array + length, fixed_array);
 
     if (fixed_array[0] == number_to_remove)
-        fixed_array[0] = number_to_remove == -length ? -length+1 : -length;
-    if (fixed_array[length-1] == number_to_remove)
-        fixed_array[length-1] = number_to_remove == length ? length-1 : length;
+        fixed_array[0] = number_to_remove == -length ? -length + 1 : -length;
+    if (fixed_array[length - 1] == number_to_remove)
+        fixed_array[length - 1] = number_to_remove == length ? length - 1 : length;
 
-    if(index_to_remove == -1)
-        index_to_remove = length-1;
+    if (index_to_remove == -1)
+        index_to_remove = length - 1;
 
     // remove everything before
     for (int i = 1; i < index_to_remove; ++i) {
@@ -38,12 +39,12 @@ int *remove_number_from_array(int const *const array, int *fixed_array, int leng
         }
     }
     // remove everything after
-    for (int i = length-2; i > index_to_remove; --i) {
+    for (int i = length - 2; i > index_to_remove; --i) {
         if (fixed_array[i] == number_to_remove) {
             fixed_array[i] = fixed_array[i + 1];
         }
     }
     //remove itself
-    fixed_array[index_to_remove] = fixed_array[index_to_remove-1];
+    fixed_array[index_to_remove] = fixed_array[index_to_remove - 1];
     return fixed_array;
 }

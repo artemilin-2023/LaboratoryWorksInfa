@@ -3,6 +3,9 @@ add_executable(LW3-2
         helpers.cpp
         helpers.h
         types.h
-        searches.cpp
         searches.h
+        searches/better_linear_search.cpp
+        searches/sentinel_linear_search.cpp
+        searches/ordered_array_search.cpp
+        searches/binary_search.cpp
 )
