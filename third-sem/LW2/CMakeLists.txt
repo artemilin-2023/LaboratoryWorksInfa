@@ -8,4 +8,6 @@ add_executable(LW3-2
         searches/sentinel_linear_search.cpp
         searches/ordered_array_search.cpp
         searches/binary_search.cpp
+        indented_helpers.cpp
+        indented_helpers.h
 )

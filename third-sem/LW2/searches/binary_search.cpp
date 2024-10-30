@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "../searches.h"
+#include "../helpers.h"
 
 using hrc = std::chrono::high_resolution_clock;
 
@@ -36,10 +37,7 @@ int timed_binary_search(int const *const array, int size, int needle, search_res
 search_result binary_search(int const *const array, int size, int needle, int correct_index) {
     search_result res{};
 
-    std::cout << "Starting timed BS. Correct index: " << correct_index << ". Got: ";
-    int timed_index = timed_binary_search(array, size, needle, res);
-    std::cout << timed_index << ". " << (timed_index == correct_index ? "Correct" : "!!!!!!!!INCORRECT!!!!!!!!")
-              << '\n';
+    print_search_result("timed BS", [&] { return timed_binary_search(array, size, needle, res); }, correct_index);
 
     return res;
 };
