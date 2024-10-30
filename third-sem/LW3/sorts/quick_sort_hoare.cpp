@@ -110,3 +110,37 @@ sort_result quick_sort_hoare(int const *const array, int size, int const *const 
 
     return res;
 };
+
+void quick_sort_hoare_with_steps(int *const array, int size) {
+    std::stack<std::pair<int, int>> sort_stack{};
+
+    sort_stack.emplace(0, size - 1);
+
+    while (!sort_stack.empty()) {
+        auto [low_i, high_i] = sort_stack.top();
+        sort_stack.pop();
+        if (low_i >= high_i)
+            continue;
+
+        int pivot = array[low_i];
+        int i = low_i - 1, j = high_i + 1;
+
+        while (true) {
+            do {
+                i++;
+            } while (array[i] < pivot);
+
+            do {
+                j--;
+            } while (array[j] > pivot);
+
+            if (i >= j)
+                break;
+
+            std::swap(array[i], array[j]);
+        }
+
+        sort_stack.emplace(low_i, j);
+        sort_stack.emplace(j + 1, high_i);
+    }
+}

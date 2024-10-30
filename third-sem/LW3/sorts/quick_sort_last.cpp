@@ -95,3 +95,30 @@ sort_result quick_sort_last(int const *const array, int size, int const *const s
 
     return res;
 };
+
+void quick_sort_last_with_steps(int *array, int size) {
+    std::stack<std::pair<int, int>> sort_stack{};
+
+    sort_stack.emplace(0, size - 1);
+
+    while (!sort_stack.empty()) {
+        auto [low_i, high_i] = sort_stack.top();
+        sort_stack.pop();
+        if (low_i >= high_i)
+            continue;
+
+        int pivot = array[high_i];
+        int i = low_i;
+
+        for (int j = low_i; j < high_i; ++j) {
+            if (array[j] <= pivot) {
+                std::swap(array[i], array[j]);
+                ++i;
+            }
+        }
+        std::swap(array[i], array[high_i]);
+
+        sort_stack.emplace(low_i, i - 1);
+        sort_stack.emplace(i + 1, high_i);
+    }
+}

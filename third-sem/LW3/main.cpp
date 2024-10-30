@@ -73,6 +73,12 @@ int main() {
     std::mt19937 gen(random_number);
 
 #define MAKE_FUNCTION_NAME_PAIR(func) {func, #func}
+    const std::vector<sort_with_steps_with_name> sorts_with_steps = {
+            MAKE_FUNCTION_NAME_PAIR(selection_sort_with_steps),
+            MAKE_FUNCTION_NAME_PAIR(quick_sort_last_with_steps),
+            MAKE_FUNCTION_NAME_PAIR(quick_sort_median_of_3_with_steps),
+            MAKE_FUNCTION_NAME_PAIR(quick_sort_hoare_with_steps),
+    };
     const std::vector<sort_with_name> sorts = {
             MAKE_FUNCTION_NAME_PAIR(selection_sort),
             MAKE_FUNCTION_NAME_PAIR(quick_sort_last),
@@ -84,6 +90,23 @@ int main() {
     std::cout << "Current path is " << std::filesystem::current_path() << '\n'
               << "Random seed is: " << random_number << '\n';
 
+    {
+        std::cout << "##Started sorts with steps\n";
+        int array_size = 15;
+        int *array = generate_array(array_size, -array_size, array_size, gen);
+        for (const auto &sort_with_steps: sorts_with_steps) {
+            std::cout << "#Started " << sort_with_steps.name << '\n';
+
+            auto array_to_sort = std::make_unique_for_overwrite<int[]>(array_size);
+            std::copy(array, array + array_size, array_to_sort.get());
+
+            sort_with_steps.func(array, array_size);
+            std::cout << "!Finished " << sort_with_steps.name << '\n';
+        }
+        std::cout << "!!Finished sorts with steps\n";
+        delete[] array;
+    }
+
     for (auto array_size: array_sizes) {
         int *array = generate_array(array_size, -array_size, array_size, gen);
         perform_searches_and_save(array, array_size, sorts, "unsorted");
@@ -91,6 +114,7 @@ int main() {
         perform_searches_and_save(array, array_size, sorts, "sorted (asc)");
         std::sort(array, array + array_size, std::greater{});
         perform_searches_and_save(array, array_size, sorts, "sorted (desc)");
+        delete[] array;
     }
 
     return 0;
