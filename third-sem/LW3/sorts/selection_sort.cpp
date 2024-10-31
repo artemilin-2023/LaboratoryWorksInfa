@@ -60,3 +60,19 @@ sort_result selection_sort(int const *const array, int size, int const *const so
 
     return res;
 };
+
+void selection_sort_with_steps(int *array, int size) {
+    std::cout << "Исходный массив:\n";
+    print_array(array, size);
+    for (int i = 0; i < size; ++i) {
+        int min_i = i;
+        for (int j = i + 1; j < size; ++j) {
+            if (array[j] < array[min_i])
+                min_i = j;
+        }
+        std::cout << "Самый маленький элемент - " << array[min_i] << " на " << min_i << " месте. "
+                  << "Заменим его с " << i << "-м.\n";
+        std::swap(array[i], array[min_i]);
+        print_array(array, size, {i, min_i});
+    }
+}

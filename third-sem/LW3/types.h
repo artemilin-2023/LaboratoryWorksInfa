@@ -21,10 +21,17 @@ struct sort_result {
     long long swap_count;
 };
 
-typedef sort_result (*int_sort_func)(int const *const array, int size, int const *const sorted_array);
+typedef sort_result (*int_sort_test)(int const *const array, int size, int const *const sorted_array);
 
 struct sort_with_name {
-    int_sort_func func;
+    int_sort_test func;
+    std::string name;
+};
+
+typedef void (*int_sort_with_steps)(int *const array, int size);
+
+struct sort_with_steps_with_name {
+    int_sort_with_steps func;
     std::string name;
 };
 
