@@ -100,7 +100,7 @@ int main() {
             auto array_to_sort = std::make_unique_for_overwrite<int[]>(array_size);
             std::copy(array, array + array_size, array_to_sort.get());
 
-            sort_with_steps.func(array, array_size);
+            sort_with_steps.func(array_to_sort.get(), array_size);
             std::cout << "!Finished " << sort_with_steps.name << '\n';
         }
         std::cout << "!!Finished sorts with steps\n";
