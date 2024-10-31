@@ -112,8 +112,10 @@ sort_result quick_sort_hoare(int const *const array, int size, int const *const 
 };
 
 void quick_sort_hoare_with_steps(int *const array, int size) {
-    std::stack<std::pair<int, int>> sort_stack{};
+    std::cout << "Исходный массив:\n";
+    print_array(array, size);
 
+    std::stack<std::pair<int, int>> sort_stack{};
     sort_stack.emplace(0, size - 1);
 
     while (!sort_stack.empty()) {
@@ -121,6 +123,10 @@ void quick_sort_hoare_with_steps(int *const array, int size) {
         sort_stack.pop();
         if (low_i >= high_i)
             continue;
+
+        std::cout << "Сортируем подмассив:\n";
+        print_array(array, size, {low_i, high_i});
+        std::cout << "Опорным элементом берём первый элемент подмассива.\n";
 
         int pivot = array[low_i];
         int i = low_i - 1, j = high_i + 1;
@@ -134,10 +140,14 @@ void quick_sort_hoare_with_steps(int *const array, int size) {
                 j--;
             } while (array[j] > pivot);
 
-            if (i >= j)
+            if (i >= j) {
+                std::cout << "Индексы сошлись\n";
                 break;
+            }
 
+            std::cout << "Переставим элемент слева, больший опорного, и справа, меньший опорного:\n";
             std::swap(array[i], array[j]);
+            print_array(array, size, {i, j});
         }
 
         sort_stack.emplace(low_i, j);

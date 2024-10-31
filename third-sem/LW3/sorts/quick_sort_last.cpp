@@ -97,8 +97,10 @@ sort_result quick_sort_last(int const *const array, int size, int const *const s
 };
 
 void quick_sort_last_with_steps(int *array, int size) {
-    std::stack<std::pair<int, int>> sort_stack{};
+    std::cout << "Исходный массив:\n";
+    print_array(array, size);
 
+    std::stack<std::pair<int, int>> sort_stack{};
     sort_stack.emplace(0, size - 1);
 
     while (!sort_stack.empty()) {
@@ -107,16 +109,27 @@ void quick_sort_last_with_steps(int *array, int size) {
         if (low_i >= high_i)
             continue;
 
+        std::cout << "Сортируем подмассив:\n";
+        print_array(array, size, {low_i, high_i});
+        std::cout << "Опорным элементом берём последний элемент подмассива\n";
+
         int pivot = array[high_i];
         int i = low_i;
 
         for (int j = low_i; j < high_i; ++j) {
+            std::cout << j << "-й элемент ";
             if (array[j] <= pivot) {
+                std::cout << "меньше опорного. Переставим его с первым элементом больше опорного\n";
                 std::swap(array[i], array[j]);
+                print_array(array, size, {i, j});
                 ++i;
+            } else {
+                std::cout << "больше опорного. Оставим его не месте.\n";
             }
         }
+        std::cout << "Поставим опорный элемент между большими и меньшими, переставив его с первым большим\n";
         std::swap(array[i], array[high_i]);
+        print_array(array, size, {i, high_i});
 
         sort_stack.emplace(low_i, i - 1);
         sort_stack.emplace(i + 1, high_i);

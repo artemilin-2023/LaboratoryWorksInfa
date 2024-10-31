@@ -64,21 +64,15 @@ sort_result selection_sort(int const *const array, int size, int const *const so
 void selection_sort_with_steps(int *array, int size) {
     std::cout << "Исходный массив:\n";
     print_array(array, size);
-    std::cout << "Будем проходить по массиву, запоминая самый маленький элемент. "
-                 "Затем поставим его в самое начало массива. "
-                 "Будем продолжать ставить самый маленький элемент массива на следующие места, пока не дойдём до конца."
-              << '\n';
     for (int i = 0; i < size; ++i) {
-        std::cout << "Найдём самый маленький элемент, что бы поставить его на " << i << "место." << '\n';
         int min_i = i;
         for (int j = i + 1; j < size; ++j) {
             if (array[j] < array[min_i])
                 min_i = j;
         }
         std::cout << "Самый маленький элемент - " << array[min_i] << " на " << min_i << " месте. "
-                  << "Заменим его с " << i << "-м.";
+                  << "Заменим его с " << i << "-м.\n";
         std::swap(array[i], array[min_i]);
-        std::cout << "Получилось:\n";
         print_array(array, size, {i, min_i});
     }
 }
