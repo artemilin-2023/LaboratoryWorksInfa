@@ -40,10 +40,10 @@ void
 perform_searches_and_save(int const *const array, long array_size, const std::vector<search_with_name> &search_pack,
                           const std::string &pack_name) {
     const std::vector<needle_def> needles = {
-            {array[array_size / 10 + 1984],     array_size / 10 + 1984,     true,  "start"},
-            {array[array_size * 4 / 10 + 1984], array_size * 4 / 10 + 1984, true,  "middle"},
-            {array[array_size * 9 / 10 - 1984], array_size * 9 / 10 - 1984, true,  "end"},
-            {42,                                -1,                         false, "doesn't exist"},
+            {array[array_size / 10 + 1984],     array_size / 10l + 1984l,      true,  "start"},
+            {array[array_size * 4 / 10 + 1984], array_size * 4l / 10l + 1984l, true,  "middle"},
+            {array[array_size * 9 / 10 - 1984], array_size * 9l / 10l - 1984l, true,  "end"},
+            {42,                                -1,                            false, "doesn't exist"},
     };
 
     auto output_path = (std::filesystem::path("results") / pack_name / std::to_string(array_size)).replace_extension(
