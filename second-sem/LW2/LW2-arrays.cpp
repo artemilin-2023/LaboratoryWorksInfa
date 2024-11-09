@@ -107,7 +107,7 @@ int min_uneven_elems(int** arr, size_t height, size_t width) {
     int min = std::numeric_limits<int>::max();
     for(int i = 0; i < height; i++) {
         for(int j = 0; j < width; j++) {
-            if(arr[i][j] % 2 == 0) {
+            if(arr[i][j] % 2 != 0) {
                 uneven_found = true;
                 min = arr[i][j] < min ? arr[i][j] : min;
             }
@@ -151,7 +151,8 @@ int validate_data(std::ifstream &in) {
         std::cout << "Полученная размерность " << m_i+1 << "-й матрицы: " << N << 'x' << M << '\n';
         if(N < 1 || M < 1) {
             std::cerr << "Высота и ширина должны быть больше 0!'\n";
-            return -5;
+            reset_stream(in, std::ios_base::beg);
+			return -5;
         }
 
         for(size_t i = 0; i < N*M; i++) {
