@@ -22,7 +22,7 @@ int mult_neg_elems_above_diag(int const *const *matrix, int height, int width);
 int min_uneven_elems(int const *const *matrix, int height, int width);
 
 int main(int argc, char **argv) {
-    if(argc == 1) {
+    if(argc != 3) {
         std::cout << "Usage: " << argv[0] << " test_file_A test_file_B" << '\n';
         return 0;
     }
