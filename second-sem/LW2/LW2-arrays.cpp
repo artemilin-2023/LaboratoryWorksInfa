@@ -1,3 +1,4 @@
+
 /****************************************************************
  *                     КАФЕДРА № 304 1 КУРС                      *
  *---------------------------------------------------------------*
@@ -15,10 +16,19 @@
 #include <fstream>
 #include <limits>
 
-void handle_file(const char* file_name);
+// all matrices are in m[h][w] format
+
+// reads the file and sets the matrix data. returns an error code
+int read_file(const char* file_name, int** &matrix, int &height, int &width);
+// processes the matrix using functions from the lw
+void process_matrix(int** matrix, int height, int width);
+// initializes matrix, then validates and reads a matrix from an ifstream. returns an error code
 int validate_and_read_matrix(std::ifstream& in, int** &matrix, int &height, int &width);
+// prints a matrix
 void print_matrix(int const *const *matrix, int height, int width);
+// returns a multiple of all negative elems above the main diagonal. returns 0 if no negative elements found
 int mult_neg_elems_above_diag(int const *const *matrix, int height, int width);
+// returns the minimum of all uneven elements. return 0 if no uneven elements found
 int min_uneven_elems(int const *const *matrix, int height, int width);
 
 int main(int argc, char **argv) {
@@ -27,30 +37,37 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    int error;
+
     std::cout << "Файл 1: " << argv[1] << '\n';
-    handle_file(argv[1]);
+    int **matrix1, height1, width1;
+    error = read_file(argv[1], matrix1, height1, width1);
+    if(!error)
+        process_matrix(matrix1, height1, width1);
 
     std::cout << "Файл 2: " << argv[2] << '\n';
-    handle_file(argv[2]);
+    int **matrix2, height2, width2;
+    error = read_file(argv[2], matrix2, height2, width2);
+    if(!error)
+        process_matrix(matrix2, height2, width2);
 }
 
-void handle_file(const char* file_name) {
+int read_file(const char* file_name, int** &matrix, int &height, int &width) {
     std::ifstream input_file(file_name);
 
     if (!input_file.is_open()) {
         std::cerr << "Ошибка открытия файла. Убедитесь, что по указанному пути существует файл: "
                   << file_name << '\n';
-        return;
+        return -1;
     }
 
     if (input_file.peek() == EOF) {
         std::cerr << "Файл " << file_name << " пуст.\n";
-        return;
+        return -2;
     }
 
-    int **matrix, height, width;
-
-    if(0 != validate_and_read_matrix(input_file, matrix, height, width)) {
+    int e = validate_and_read_matrix(input_file, matrix, height, width);
+    if(0 != e) {
         std::cerr << "В файле должны через пробел или новую строку находиться количество матриц, а затем для каждой высота, ширина, а затем элементы матрицы слева-направо, затем сверху-вниз. Пример:\n";
         std::cerr << "1\n2 3\n1 2 3\n4 5 6\n";
         std::cerr << "Исходный файл:\n";
@@ -62,9 +79,12 @@ void handle_file(const char* file_name) {
         while(input_file.get(c))
             std::cerr << c;
         std::cerr << '\n';
-        return;
+        return e;
     }
+    return 0;
+}
 
+void process_matrix(int** matrix, int height, int width) {
     std::cout << "Исходная матрица:\n";
     print_matrix(matrix, height, width);
 
@@ -79,8 +99,6 @@ void handle_file(const char* file_name) {
         std::cout << "Нечётных элементов нет!\n";
     else
         std::cout << "Минимум среди нечётных элементов: " << task2 << '\n';
-
-    delete[] matrix;
 }
 
 int validate_and_read_matrix(std::ifstream& in, int** &matrix, int &height, int &width) {
