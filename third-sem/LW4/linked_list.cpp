@@ -234,7 +234,7 @@ namespace llist {
         }
         int i = 0;
         while (current != nullptr) {
-            os << '[' << i << "]=" << current->data << "->";
+            os << '[' << i++ << "]=" << current->data << "->";
             current = current->next;
         }
         os << "nullptr";

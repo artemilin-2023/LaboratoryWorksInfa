@@ -24,17 +24,17 @@ void fill_linked_list(llist::linked_list& list, int size = 20, float min = -50, 
 
 int main() {
     std::cout << "Лабораторная работа №4 - Линейные списки\n";
-    std::cout << "    Вариант №8\n\n";
+    std::cout << "    Вариант №8\n";
 
     llist::linked_list list{};
 
-    std::cout << "Создан пустой список. ";
+    std::cout << "Создан пустой список\n";
     bool exit = false;
     while (true) {
         if (exit) {
             break;
         }
-        std::cout << "Выберите операцию:\n";
+        std::cout << "\nВыберите операцию:\n";
         std::cout << "0) выйти из программы\n";
         std::cout << "1) вставить элемент в начало списка\n";
         std::cout << "2) вставить элемент в конец списка\n";
@@ -124,7 +124,19 @@ int main() {
             }
                 break;
             case 9: {
-                std::cout << "Содержание списка: " << list << '\n';
+                std::cout << "Введите название файла для сохранения или "
+                             "оставьте строку пустой, что бы вывести в консоль\n> ";
+                std::string filename;
+                std::cin.ignore();
+                std::getline(std::cin   , filename);
+                if(filename.empty()) {
+                    std::cout << "Содержание списка: " << list << '\n';
+                } else {
+                    auto output_path = std::filesystem::current_path().replace_filename(filename);
+                    std::cout << "Сохраняем содержание списка в файл " << output_path << '\n';
+                    std::ofstream fout(output_path);
+                    fout << list << '\n';
+                }
             }
                 break;
             case 10: {
