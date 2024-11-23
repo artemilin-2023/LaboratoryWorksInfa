@@ -31,8 +31,14 @@ int main() {
     std::cout << "Создан пустой список\n";
     bool exit = false;
     while (!exit) {
+        if(std::cin.fail()) {
+            std::cout << "Ошибка ввода. Ввод должен быть целым числом\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
         std::cout << "\nВыберите операцию:\n";
-        std::cout << "0) выйти из программы\n";
+        std::cout << "-1) выйти из программы\n";
         std::cout << "1) вставить элемент в начало списка\n";
         std::cout << "2) вставить элемент в конец списка\n";
         std::cout << "3) вставить элемент в заданную позицию списка\n";
@@ -48,15 +54,10 @@ int main() {
         std::cout << "3) вставить элемент в заданную позицию списка\n";
         std::cout << "5) удалить элемент из конца списка\n";
         std::cout << "> ";
-        int option = -1;
+        int option = 0;
         std::cin >> option;
-        if(std::cin.fail()) {
-            std::cout << "Ошибка ввода. Ввод должен быть целым числом\n";
-            std::cin.clear();
-            continue;
-        }
         switch (option) {
-            case 0: {
+            case -1: {
                 std::cout << "Выход...\n";
                 exit = true;
             }
