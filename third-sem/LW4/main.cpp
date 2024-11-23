@@ -51,10 +51,16 @@ int main() {
         std::cout << "3) вставить элемент в заданную позицию списка\n";
         std::cout << "5) удалить элемент из конца списка\n";
         std::cout << "> ";
-        int option;
+        int option = -1;
         std::cin >> option;
+        if(std::cin.fail()) {
+            std::cout << "Ошибка ввода. Ввод должен быть целым числом\n";
+            std::cin.clear();
+            continue;
+        }
         switch (option) {
             case 0: {
+                std::cout << "Выход...\n";
                 exit = true;
             }
                 break;
@@ -146,7 +152,7 @@ int main() {
             }
                 break;
             default: {
-                std::cout << "Неизвестная операция!\n";
+                std::cout << "Неизвестная операция\n";
             }
                 break;
         }
