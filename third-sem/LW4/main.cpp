@@ -30,10 +30,7 @@ int main() {
 
     std::cout << "Создан пустой список\n";
     bool exit = false;
-    while (true) {
-        if (exit) {
-            break;
-        }
+    while (!exit) {
         std::cout << "\nВыберите операцию:\n";
         std::cout << "0) выйти из программы\n";
         std::cout << "1) вставить элемент в начало списка\n";
