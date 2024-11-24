@@ -45,7 +45,7 @@ std::vector<std::vector<int>> deorient_graph(const std::vector<std::vector<int>>
 }
 
 int main() {
-    std::cout << "Лабораторная работа №5 - Линейные списки\n";
+    std::cout << "Лабораторная работа №1 - Графы\n";
     std::cout << "    Вариант №4\n\n";
 
     // adjacency matrix, as stated in the assignment
