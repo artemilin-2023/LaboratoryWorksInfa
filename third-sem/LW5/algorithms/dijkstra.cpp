@@ -7,7 +7,7 @@
 const int INF = std::numeric_limits<int>::max();
 
 // dijkstra
-//  conn_m = {cur_v: {next_v, dist}}
+// conn_m = {cur_v: {next_v, dist}...}
 void visualise_shortest_paths(const std::vector<std::vector<std::pair<int, int>>> &conn_m, int src) {
     std::cout << "Начинаем поиск кратчайших путей при помощи алгоритма Дейкстры из вершины " << src << '\n';
 
