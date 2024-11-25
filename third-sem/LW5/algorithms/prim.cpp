@@ -43,7 +43,10 @@ void visualise_minimum_spanning_tree(const std::vector<std::vector<std::pair<int
                 std::cout << "Вершина " << next_v + 1 << " уже была посещена. Ничего не меняем\n";
             }
         }
-        std::cout << "Все вершины, доступные из текущей, просмотрены\n\n";
+        std::cout << "Все вершины, доступные из текущей, просмотрены\n";
+        std::cout << "Ниже выведено промежуточное дерево:\n";
+        print_tree(mst_conn_m, initial_v, 0);
+        std::cout << '\n';
     }
     mst_conn_m[0].erase(mst_conn_m[0].begin()); // we added a looping edge to prime the queue earlier
     std::cout << "Непосещённых вершин не осталось, а значит мы построили минимальное остовное дерево. "
