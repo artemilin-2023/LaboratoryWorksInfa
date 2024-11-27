@@ -110,7 +110,7 @@ int main() {
                 int index;
                 std::cin >> index;
                 std::cout << "Удаляем " << index << "-й элемент \n";
-                list.pop_front();
+                list.erase(index-1);
                 std::cout << "Содержание списка: " << list << '\n';
             }
                 break;
