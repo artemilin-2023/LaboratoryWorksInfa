@@ -1,56 +1,8 @@
+#include "helpers.h"
 
-/****************************************************************
- *                     КАФЕДРА № 304 1 КУРС                      *
- *---------------------------------------------------------------*
- * Project Type  : Win32 Console Application                     *
- * Project Name  : LW2                                           *
- * File Name     : LW2.cpp                                       *
- * Language      : C/C++                                         *
- * Programmer(s) : Романов Д.И., Ильин А.А                       *
- * Created at    : 20/02/24                                      *
- * Last Revision : 05/03/24                                      *
- * Comment(s)    : Двумерные массивы                             *
- ****************************************************************/
-
-#include <iostream>
 #include <fstream>
-#include <limits>
 
-// all matrices are in m[h][w] format
-
-// reads the file and sets the matrix data. returns an error code
-int read_file(const char* file_name, int** &matrix, int &height, int &width);
-// processes the matrix using functions from the lw
-void process_matrix(int** matrix, int height, int width);
-// initializes matrix, then validates and reads a matrix from an ifstream. returns an error code
-int validate_and_read_matrix(std::ifstream& in, int** &matrix, int &height, int &width);
-// prints a matrix
-void print_matrix(int const *const *matrix, int height, int width);
-// returns a multiple of all negative elems above the main diagonal. returns 0 if no negative elements found
-int mult_neg_elems_above_diag(int const *const *matrix, int height, int width);
-// returns the minimum of all uneven elements. return 0 if no uneven elements found
-int min_uneven_elems(int const *const *matrix, int height, int width);
-
-int main(int argc, char **argv) {
-    if(argc != 3) {
-        std::cout << "Usage: " << argv[0] << " test_file_A test_file_B" << '\n';
-        return 0;
-    }
-
-    int error;
-
-    std::cout << "Файл 1: " << argv[1] << '\n';
-    int **matrix1, height1, width1;
-    error = read_file(argv[1], matrix1, height1, width1);
-    if(!error)
-        process_matrix(matrix1, height1, width1);
-
-    std::cout << "Файл 2: " << argv[2] << '\n';
-    int **matrix2, height2, width2;
-    error = read_file(argv[2], matrix2, height2, width2);
-    if(!error)
-        process_matrix(matrix2, height2, width2);
-}
+#include "tasks.h"
 
 int read_file(const char* file_name, int** &matrix, int &height, int &width) {
     std::ifstream input_file(file_name);
@@ -151,34 +103,3 @@ void print_matrix(const int*const* const matrix, int height, int width) {
     }
 }
 
-int mult_neg_elems_above_diag(int const *const *matrix, int height, int width) {
-    bool neg_found = false;
-    int mult = 1;
-    for(int i = 0; i < height; i++) {
-        for(int j = i + 1; j < width; j++) {
-            if(matrix[i][j] < 0) {
-                neg_found = true;
-                mult *= matrix[i][j];
-            }
-        }
-    }
-    if(!neg_found)
-        return 0;
-    return mult;
-}
-
-int min_uneven_elems(int const *const *matrix, int height, int width) {
-    bool uneven_found = false;
-    int min = std::numeric_limits<int>::max();
-    for(int i = 0; i < height; i++) {
-        for(int j = 0; j < width; j++) {
-            if(matrix[i][j] % 2 != 0) {
-                uneven_found = true;
-                min = matrix[i][j] < min ? matrix[i][j] : min;
-            }
-        }
-    }
-    if(!uneven_found)
-        return 0;
-    return min;
-}

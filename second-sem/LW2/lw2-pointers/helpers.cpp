@@ -1,39 +1,8 @@
+#include "helpers.h"
 
-/****************************************************************
- *                     КАФЕДРА № 304 1 КУРС                      *
- *---------------------------------------------------------------*
- * Project Type  : Win32 Console Application                     *
- * Project Name  : LW2                                           *
- * File Name     : LW2.cpp                                       *
- * Language      : C/C++                                         *
- * Programmer(s) : Романов Д.И., Ильин А.А                       *
- * Created at    : 20/02/24                                      *
- * Last Revision : 05/03/24                                      *
- * Comment(s)    : Двумерные массивы                             *
- ****************************************************************/
-
-#include <iostream>
 #include <fstream>
-#include <limits>
 
-void handle_file(const char* file_name);
-int validate_and_read_matrix(std::ifstream& in, int* &matrix, int &height, int &width);
-void print_matrix(const int* matrix, int height, int width);
-int mult_neg_elems_above_diag(const int* arr, int height, int width);
-int min_uneven_elems(const int* arr, int height, int width);
-
-int main(int argc, char **argv) {
-    if(argc != 3) {
-        std::cout << "Usage: " << argv[0] << " test_file_A test_file_B" << '\n';
-        return 0;
-    }
-
-    std::cout << "Файл 1: " << argv[1] << '\n';
-    handle_file(argv[1]);
-
-    std::cout << "Файл 2: " << argv[2] << '\n';
-    handle_file(argv[2]);
-}
+#include "tasks.h"
 
 void handle_file(const char* file_name) {
     std::ifstream input_file(file_name);
@@ -130,39 +99,3 @@ void print_matrix(const int* const matrix, int height, int width) {
     }
 }
 
-int mult_neg_elems_above_diag(const int* const arr_start, int height, int width) {
-    bool neg_found = false;
-    int mult = 1;
-    int shift = 0;
-    const int *arr_cur = arr_start;
-    const int *arr_end = arr_start + height*width;
-    while(arr_cur < arr_end) {
-        if((arr_cur - arr_start) % width == 0) {
-            arr_cur += ++shift;
-        }
-        if(*arr_cur < 0) {
-            neg_found = true;
-            mult *= *arr_cur;
-        }
-        arr_cur++;
-    }
-    if(!neg_found)
-        return 0;
-    return mult;
-}
-
-int min_uneven_elems(const int* arr, int height, int width) {
-    bool uneven_found = false;
-    int min = std::numeric_limits<int>::max();
-    const int* arr_end = arr + height*width;
-    while(arr < arr_end) {
-        if(*arr % 2 != 0) {
-            uneven_found = true;
-            min = *arr < min ? *arr : min;
-        }
-        arr++;
-    }
-    if(!uneven_found)
-        return 0;
-    return min;
-}
