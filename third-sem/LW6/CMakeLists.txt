@@ -1,0 +1,11 @@
+add_executable(LW3-6
+        main.cpp
+        helpers.cpp
+        helpers.h
+        binary_tree.cpp
+        binary_tree.h
+        binary_tree.cpp
+        binary_tree.h
+        random_tree.cpp
+        random_tree.h
+)
