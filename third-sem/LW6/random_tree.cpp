@@ -1,7 +1,6 @@
 #include "random_tree.h"
 
 #include <iostream>
-#include <limits>
 #include <stack>
 #include <queue>
 
@@ -67,9 +66,9 @@ namespace rtree {
     }
 #pragma clang diagnostic pop
 
-    void clear(node *root) {
+    node *clear(node *root) {
         if (root == nullptr) {
-            return;
+            return nullptr;
         }
 
         // copied from btree::print_postorder. refer to that for comments
@@ -95,6 +94,7 @@ namespace rtree {
                 stack.pop();
             }
         }
+        return nullptr;
     }
 
     int height(node *root) {
@@ -135,6 +135,176 @@ namespace rtree {
             }
         }
         return height;
+    }
+
+    int node_count(node *root) {
+        if (root == nullptr) {
+            return 0;
+        }
+
+        // copied from btree::node_count. refer to that for comments
+        
+        std::stack<node *> stack{};
+        stack.push(root);
+
+        int count = 0;
+
+        while (!stack.empty()) {
+            node *cur_node = stack.top();
+            stack.pop();
+            count++;
+
+            if (cur_node->right != nullptr) {
+                stack.push(cur_node->right);
+            }
+            if (cur_node->left != nullptr) {
+                stack.push(cur_node->left);
+            }
+        }
+        return count;
+    }
+
+    std::tuple<node *, node *, node *, node *> min_max_2(node *root) {
+        if (root == nullptr) {
+            return {nullptr, nullptr, nullptr, nullptr};
+        }
+
+        // copied from btree::min_max_2. refer to that for comments
+
+        node *minimum = root, *minimum_2{}, *maximum_2{}, *maximum = root;
+
+        while (minimum->left != nullptr) {
+            minimum_2 = minimum;
+            minimum = minimum->left;
+        }
+        if (minimum->right != nullptr) {
+            minimum_2 = minimum->right;
+            while (minimum_2->left != nullptr) {
+                minimum_2 = minimum_2->left;
+            }
+        }
+
+        while (maximum->right != nullptr) {
+            maximum_2 = maximum;
+            maximum = maximum->right;
+        }
+        if (maximum->left != nullptr) {
+            maximum_2 = maximum->left;
+            while (maximum_2->right != nullptr) {
+                maximum_2 = maximum_2->right;
+            }
+        }
+
+        return {minimum, minimum_2, maximum_2, maximum};
+    }
+
+    void print_preorder(node *root) {
+        if (root == nullptr) {
+            return;
+        }
+
+        // copied from btree::print_preorder. refer to that for comments
+        
+        std::stack<node *> stack{};
+        stack.push(root);
+
+        while (!stack.empty()) {
+            node *cur_node = stack.top();
+            stack.pop();
+
+            std::cout << cur_node->key << ' ';
+
+            if (cur_node->right != nullptr) {
+                stack.push(cur_node->right);
+            }
+            if (cur_node->left != nullptr) {
+                stack.push(cur_node->left);
+            }
+        }
+        std::cout << '\n';
+    }
+
+    void print_inorder(node *root) {
+        if (root == nullptr) {
+            return;
+        }
+
+        // copied from btree::print_intorder. refer to that for comments
+        
+        std::stack<node *> stack{};
+        node *cur_node = root;
+
+        while (cur_node != nullptr || !stack.empty()) {
+            while (cur_node != nullptr) {
+                stack.push(cur_node);
+                cur_node = cur_node->left;
+            }
+
+            cur_node = stack.top();
+            stack.pop();
+
+            std::cout << cur_node->key << ' ';
+
+            cur_node = cur_node->right;
+        }
+        std::cout << '\n';
+    }
+
+    void print_postorder(node *root) {
+        if (root == nullptr) {
+            return;
+        }
+
+        // copied from btree::print_postorder. refer to that for comments
+        
+        std::stack<node *> stack{};
+        node *cur_node = root;
+        node *last_visited = nullptr;
+
+        while (cur_node != nullptr || !stack.empty()) {
+            while (cur_node != nullptr) {
+                stack.push(cur_node);
+                cur_node = cur_node->left;
+            }
+
+            node *parent_node = stack.top();
+
+            if (parent_node->right != nullptr && last_visited != parent_node->right) {
+                cur_node = parent_node->right;
+            } else {
+                std::cout << parent_node->key << ' ';
+
+                last_visited = parent_node;
+                stack.pop();
+            }
+        }
+        std::cout << '\n';
+    }
+
+    void print_levelorder(node *root) {
+        if (root == nullptr) {
+            return;
+        }
+
+        // copied from btree::print_levelorder. refer to that for comments
+        
+        std::queue<node *> queue{};
+        queue.push(root);
+
+        while (!queue.empty()) {
+            node *cur_node = queue.front();
+            queue.pop();
+
+            std::cout << cur_node->key << ' ';
+
+            if (cur_node->left != nullptr) {
+                queue.push(cur_node->left);
+            }
+            if (cur_node->right != nullptr) {
+                queue.push(cur_node->right);
+            }
+        }
+        std::cout << '\n';
     }
 
     void print_tree(const node *node, const std::string &prefix, bool is_left, bool is_end) {

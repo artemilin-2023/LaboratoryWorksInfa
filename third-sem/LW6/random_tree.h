@@ -26,14 +26,33 @@ namespace rtree {
     node *insert(node *root, int key);
 
     // deletes this binary tree, freeing the memory
-    void clear(node *root);
+    node *clear(node *root);
 
     // operations
 
     // returns the height of the tree
     int height(node *root);
 
+    // returns the node count of the tree
+    int node_count(node *root);
+
+    // returns minimal, last to minimal, last to maximal and maximal elements
+    // each element can be nullptr if no suitable one was found
+    std::tuple<node *, node *, node *, node *> min_max_2(node *root);
+
     // traversal
+
+    // prints the tree as array in preorder
+    void print_preorder(node *root);
+
+    // prints the tree as array in order
+    void print_inorder(node *root);
+
+    // prints the tree as array in postorder
+    void print_postorder(node *root);
+
+    // prints the tree as array in level-order
+    void print_levelorder(node *root);
 
     // prints the tree in tree-like form
     void print_tree(const node *node, const std::string &prefix = "", bool is_left = false, bool is_end = true);
