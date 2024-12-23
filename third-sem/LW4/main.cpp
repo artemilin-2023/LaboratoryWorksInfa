@@ -110,7 +110,7 @@ int main() {
                 int index;
                 std::cin >> index;
                 std::cout << "Удаляем " << index << "-й элемент \n";
-                list.pop_front();
+                list.erase(index);
                 std::cout << "Содержание списка: " << list << '\n';
             }
                 break;
@@ -122,6 +122,10 @@ int main() {
                 break;
             case 8: {
                 std::cout << "Находим максимальный элемент списка\n";
+                if (list.empty()) {
+                    std::cout << "Список пуст!\n";
+                    continue;
+                }
                 int max_i;
                 llist::node *max_node = list.max(max_i);
                 std::cout << "Это " << max_node->data << " на месте " << max_i << '\n';

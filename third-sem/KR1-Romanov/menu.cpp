@@ -2,6 +2,7 @@
 
 #include "database.h"
 
+#include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -129,7 +130,7 @@ namespace menu {
             std::cout << "Вы ввели пустой путь. Ничего не произошло\n";
             return;
         }
-        std::filesystem::path output_path = std::filesystem::absolute(std::filesystem::path(file_path).lexically_normal());
+        auto output_path = std::filesystem::absolute(std::filesystem::path(file_path).lexically_normal());
         std::filesystem::create_directories(output_path.parent_path());
         std::cout << "Сохраняем базу в файл " << output_path << '\n';
         db::save_to_file(db, output_path);
@@ -217,11 +218,7 @@ namespace menu {
                 break;
             default:
                 std::cout << "Неверное поле для сортировки. Ничего не произошло\n";
-                break;
-        }
-        if(sort_field < 1 || sort_field > 7) {
-            std::cout << "Неверный статус машины. Ничего не произошло\n";
-            return;
+                return;
         }
         db::sort(db, comparison_function);
     }
@@ -234,10 +231,8 @@ namespace menu {
                      "3) до даты\n"
                      "4) соответствует состоянию\n";
 
-        int filter_type;
+        int filter_type{};
         std::cin >> filter_type;
-        using filt = bool(*)(const db::car_row &);
-        filt filter_function;
         switch (filter_type) {
             case 1: // string search
             {
@@ -246,7 +241,7 @@ namespace menu {
                              "2) модель машины\n"
                              "3) номер машины\n"
                              "4) вместимость машины\n> ";
-                int field_num;
+                int field_num{};
                 std::cin >> field_num;
                 if (field_num < 1 || field_num > 4) {
                     std::cout << "Некорректное поле. Ничего не произошло\n";
@@ -255,65 +250,136 @@ namespace menu {
                 std::cout << "Введите подстроку для поиска\n> ";
                 std::string search_string;
                 std::getline(std::cin >> std::ws, search_string, '\n');
+                if (search_string == "") {
+                    std::cout << "Подстрока не должна быть пустой!\n";
+                    return;
+                }
                 switch (field_num) {
-                    case 1: {
-                        bool (const car_row &) const filter_function = [search_string](const db::car_row& row) -> bool {
+                    case 1: { // type
+                        db::filter(db, [search_string](const db::car_row& row) -> bool {
                             return row.car_type.find(search_string) != std::string::npos;
-                        };
+                        });
+                    }
+                        break;
+                    case 2: { // model
+                        db::filter(db, [search_string](const db::car_row& row) -> bool {
+                            return row.car_model.find(search_string) != std::string::npos;
+                        });
+                    }
+                        break;
+                    case 3: { // plates
+                        db::filter(db, [search_string](const db::car_row& row) -> bool {
+                            return row.car_plate.find(search_string) != std::string::npos;
+                        });
+                    }
+                        break;
+                    case 4: { // capacity
+                        db::filter(db, [search_string](const db::car_row& row) -> bool {
+                            return row.car_capacity.find(search_string) != std::string::npos;
+                        });
+                    }
+                        break;
+                    default: {
+                        std::cout << "Некорректное поле. Ничего не произошло\n";
+                        return;
                     }
                 }
+            }
+                break;
+            case 2: // after date
+            {
+                std::cout << "Выберите поле, по которому будет производиться фильтрация:\n"
+                             "1) дата следующей инспекции\n"
+                             "2) дата заказа\n> ";
+                int field_num{};
+                std::cin >> field_num;
+                if (field_num < 1 || field_num > 2) {
+                    std::cout << "Некорректное поле. Ничего не произошло\n";
+                    return;
+                }
+                std::cout << "Введите дату в формате dd/mm/yyyy\n> ";
+                std::string temp_date;
+                std::getline(std::cin >> std::ws, temp_date);
+                time_t filter_date;
+                if(!extract_date(temp_date, filter_date)) {
+                    std::cout << "Введена некорректная дата. Ничего не произошло\n";
+                    return;
+                }
+                switch (field_num) {
+                    case 1: { // inspection date
+                        db::filter(db, [filter_date](const db::car_row& row) -> bool {
+                            return std::difftime(row.next_inspection_date, filter_date) > 0;
+                        });
+                    }
+                        break;
+                    case 2: { // order date
+                        db::filter(db, [filter_date](const db::car_row& row) -> bool {
+                            return std::difftime(row.order_date, filter_date) > 0;
+                        });
+                    }
+                        break;
+                    default: {
+                        std::cout << "Некорректное поле. Ничего не произошло\n";
+                        return;
+                    }
+                }
+            }
+                break;
+            case 3: // before date
+            {
+                std::cout << "Выберите поле, по которому будет производиться фильтрация:\n"
+                             "1) дата следующей инспекции\n"
+                             "2) дата заказа\n> ";
+                int field_num{};
+                std::cin >> field_num;
+                if (field_num < 1 || field_num > 2) {
+                    std::cout << "Некорректное поле. Ничего не произошло\n";
+                    return;
+                }
+                std::cout << "Введите дату в формате dd/mm/yyyy\n> ";
+                std::string temp_date;
+                std::getline(std::cin >> std::ws, temp_date);
+                time_t filter_date;
+                if(!extract_date(temp_date, filter_date)) {
+                    std::cout << "Введена некорректная дата. Ничего не произошло\n";
+                    return;
+                }
+                switch (field_num) {
+                    case 1: { // inspection date
+                        db::filter(db, [filter_date](const db::car_row& row) -> bool {
+                            return std::difftime(row.next_inspection_date, filter_date) < 0;
+                        });
+                    }
+                        break;
+                    case 2: { // order date
+                        db::filter(db, [filter_date](const db::car_row& row) -> bool {
+                            return std::difftime(row.order_date, filter_date) < 0;
+                        });
+                    }
+                        break;
+                    default: {
+                        std::cout << "Некорректное поле. Ничего не произошло\n";
+                        return;
+                    }
+                }
+            }
+                break;
+            case 4: // status
+            {
+                std::cout << "Введите статус машины (1 - свободна, 2 - есть заказ, 3 - исполняет заказ, 4 - в ремонте)\n> ";
+                int car_status;
+                std::cin >> car_status;
+                if(car_status < 1 || car_status >= db::car_status::MAX) {
+                    std::cout << "Неверный статус машины. Ничего не произошло\n";
+                    return;
+                }
+                db::car_status filter_status = static_cast<db::car_status>(car_status);
 
+                db::filter(db, [filter_status](const db::car_row& row) -> bool {
+                    return row.car_status == filter_status;
+                });
             }
                 break;
-            case 2: // model
-            {
-                comparison_function = [](const db::car_row& a, const db::car_row& b) {
-                    return a.car_model < b.car_model;
-                };
-            }
-                break;
-            case 3: // plate
-            {
-                comparison_function = [](const db::car_row& a, const db::car_row& b) {
-                    return a.car_plate < b.car_plate;
-                };
-            }
-                break;
-            case 4: // capacity
-            {
-                comparison_function = [](const db::car_row& a, const db::car_row& b) {
-                    return a.car_capacity < b.car_capacity;
-                };
-            }
-                break;
-            case 5: // next_inspection_date
-            {
-                comparison_function = [](const db::car_row& a, const db::car_row& b) {
-                    return a.next_inspection_date < b.next_inspection_date;
-                };
-            }
-                break;
-            case 6: // status
-            {
-                comparison_function = [](const db::car_row& a, const db::car_row& b) {
-                    return a.car_status < b.car_status;
-                };
-            }
-                break;
-            case 7: // order_date
-            {
-                comparison_function = [](const db::car_row& a, const db::car_row& b) {
-                    return a.order_date < b.order_date;
-                };
-            }
-                break;
-            default:
-                std::cout << "Неверное поле для сортировки. Ничего не произошло\n";
-                break;
-        }
-        if(filter_type < 1 || filter_type > 7) {
-            std::cout << "Неверный статус машины. Ничего не произошло\n";
-            return;
         }
     }
 

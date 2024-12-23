@@ -23,11 +23,11 @@ const int ARR_MIN = 1;
 const int ARR_MAX = 50;
 
 int main() {
-    std::cout << "Лабораторная работа №2 - Линейные списки\n";
+    std::cout << "Лабораторная работа №2 - Бинарные деревья поиска\n";
     std::cout << "    Вариант №9\n";
 
-//    auto vec = generate_array(ARR_LEN, ARR_MIN, ARR_MAX);
-    auto vec = {31, 33, 11, 5, 13, 39, 29, 23, 7, 27, 19, 41, 1, 3, 25, 47, 21, 35, 43, 45, 9, 15, 17, 37};
+    auto vec = generate_array(ARR_LEN, ARR_MIN, ARR_MAX);
+//    auto vec = {31, 33, 11, 5, 13, 39, 29, 23, 7, 27, 19, 41, 1, 3, 25, 47, 21, 35, 43, 45, 9, 15, 17, 37};
 
     std::cout << "Изначальный массив: ";
 
@@ -41,7 +41,6 @@ int main() {
     btree::node *binary_tree{nullptr};
     for (auto val: vec) {
         binary_tree = btree::insert(binary_tree, val);
-        btree::print_tree(binary_tree);
     }
 
     std::cout << "Бинарное дерево поиска. Высота: " << btree::height(binary_tree) << "\n";

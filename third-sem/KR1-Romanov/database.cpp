@@ -1,5 +1,6 @@
 #include "database.h"
 
+#include <sstream>
 #include <fstream>
 
 namespace db {

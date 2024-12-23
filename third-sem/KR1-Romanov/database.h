@@ -58,6 +58,7 @@ namespace db {
                 if(comp(current->data, smallest->data)) {
                     smallest = current;
                 }
+                current = current->next;
             }
             new_list->push_back(smallest->data);
             db->_list.erase(smallest);
