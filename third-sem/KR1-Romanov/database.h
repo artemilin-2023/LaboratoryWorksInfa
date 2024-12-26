@@ -8,14 +8,14 @@
 namespace db {
 
     enum car_status : int {
-        free             = 1,
-        has_order        = 2,
+        free = 1,
+        has_order = 2,
         fulfilling_order = 3,
-        in_repair        = 4,
+        in_repair = 4,
         MAX,
     };
 
-    std::string format_status(const car_status& status);
+    std::string format_status(const car_status &status);
 
     struct car_row {
         std::string car_type;
@@ -27,7 +27,7 @@ namespace db {
         time_t order_date;
     };
 
-    std::string format_row(const car_row& car);
+    std::string format_row(const car_row &car);
 
     struct database {
         llist::linked_list<car_row> _list{};
@@ -40,9 +40,9 @@ namespace db {
 
     void print(db::database *db);
 
-    void save_to_file(db::database *db, const std::filesystem::path& output_path);
+    void save_to_file(db::database *db, const std::filesystem::path &output_path);
 
-    void read_from_file(database *db, const std::filesystem::path& input_path);
+    void read_from_file(database *db, const std::filesystem::path &input_path);
 
     void erase(database *db, int index);
 
@@ -51,11 +51,11 @@ namespace db {
     template<class T>
     void sort(database *db, T comp) {
         auto *new_list = new llist::linked_list<car_row>;
-        while(!db->_list.empty()) {
+        while (!db->_list.empty()) {
             auto current = db->_list.begin();
             auto smallest = current;
-            while(current != nullptr) {
-                if(comp(current->data, smallest->data)) {
+            while (current != nullptr) {
+                if (comp(current->data, smallest->data)) {
                     smallest = current;
                 }
                 current = current->next;
@@ -70,13 +70,13 @@ namespace db {
     template<class T>
     void filter(database *db, T filt) {
         auto *new_list = new llist::linked_list<car_row>;
-        if(db->_list.empty())
+        if (db->_list.empty())
             return;
 
         auto current = db->_list.begin();
         auto smallest = current;
-        while(current != nullptr) {
-            if(filt(current->data)) {
+        while (current != nullptr) {
+            if (filt(current->data)) {
                 new_list->push_back(smallest->data);
             }
             current = current->next;

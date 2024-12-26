@@ -133,11 +133,11 @@ namespace db {
             if (check_eof(line_stream, total_lines)) // no more data, extracted something
                 continue;
 
-            line_stream >> new_car.order_date;
+            line_stream >> new_car.order_date; // no trailing ;
             if (check_fail(line_stream, total_lines)) // no more data, extracted nothing
                 continue;
-            std::cout << "Дата заказа: [" << std::put_time(std::localtime(&new_car.order_date), "%m/%d/%Y")
-                      << "] ";
+            std::cout << "Дата заказа: ["
+                      << std::put_time(std::localtime(&new_car.order_date), "%m/%d/%Y") << "] ";
             // ignoring trailing whitespace, try to get one more character to check for eof
             (line_stream >> std::ws).get();
 

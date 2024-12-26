@@ -44,9 +44,9 @@ namespace llist {
         void insert(int pos, T data); // before pos O(n)
         void erase(llist::node<T> *node); // O(1)
         void erase(int index); // O(n)
-        void push_back(const T& data); // O(1)
+        void push_back(const T &data); // O(1)
         void pop_back(); //O(1)
-        void push_front(const T& data); // O(1)
+        void push_front(const T &data); // O(1)
         void pop_front(); // O(1)
     };
 
