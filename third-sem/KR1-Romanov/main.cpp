@@ -12,11 +12,7 @@
 * Comment(s)    : Линейные списки                                 *
 ******************************************************************/
 
-#include <algorithm>
 #include <iostream>
-#include <random>
-#include <fstream>
-#include <filesystem>
 
 #include "menu.h"
 #include "database.h"

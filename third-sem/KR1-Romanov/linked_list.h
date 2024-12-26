@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-use-nodiscard"
 #ifndef LW_LINKED_LIST_H
 #define LW_LINKED_LIST_H
 
@@ -57,5 +55,3 @@ namespace llist {
 #include "linked_list.tpp"
 
 #endif //LW_LINKED_LIST_H
-
-#pragma clang diagnostic pop

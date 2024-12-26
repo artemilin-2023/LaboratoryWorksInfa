@@ -8,7 +8,6 @@
 #include <limits>
 #include <array>
 #include <filesystem>
-#include <fstream>
 
 typedef void (*menu_entry_function)(db::database *);
 

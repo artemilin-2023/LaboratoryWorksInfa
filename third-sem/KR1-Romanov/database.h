@@ -79,6 +79,7 @@ namespace db {
             if(filt(current->data)) {
                 new_list->push_back(smallest->data);
             }
+            current = current->next;
         }
 
         db->_list.clear();
