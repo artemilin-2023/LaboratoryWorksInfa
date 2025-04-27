@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 #define WINVER 0x0605
 #include <windows.h>
