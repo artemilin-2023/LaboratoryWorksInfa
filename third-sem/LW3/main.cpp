@@ -67,6 +67,7 @@ void perform_searches_and_save(int const *const array, long array_size, const st
 }
 
 int main() {
+    setlocale(LC_ALL, "Russian");
     std::random_device rd;
     auto random_number = rd();
 //    unsigned random_number = 150444277;
