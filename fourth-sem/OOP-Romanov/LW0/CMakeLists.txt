@@ -4,4 +4,6 @@ add_executable(OOP-Romanov-0
         location.h
         point.cpp
         point.h
+        chandelier.cpp
+        chandelier.h
 )
