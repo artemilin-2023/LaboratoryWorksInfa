@@ -6,6 +6,8 @@
 
 const int INF = std::numeric_limits<int>::max();
 
+void print_vec(const std::vector<int>& vec, const std::string& name);
+
 // dijkstra
 // conn_m = {cur_v: {next_v, dist}...}
 void visualise_shortest_paths(const std::vector<std::vector<std::pair<int, int>>> &conn_m, int src) {
@@ -48,7 +50,11 @@ void visualise_shortest_paths(const std::vector<std::vector<std::pair<int, int>>
                           << ") больше, чем уже найденный (" << dist[next_v] << "). Ничего не меняем\n";
             }
         }
-        std::cout << "Все вершины, доступные из текущей, просмотрены\n\n";
+        std::cout << "Все вершины, доступные из текущей, просмотрены\n";
+        std::cout << "Вот, как выглядят результрующие массивы после релаксации:\n";
+        print_vec(dist, "dist");
+        print_vec(path, "path");
+        std::cout << '\n';
     }
     std::cout << "Непосещённых вершин не осталось, а значит мы нашли пути до всех вершин. На этом алгоритм закончен\n";
     std::cout << "Ниже выведены все пути и их стоимость\n";
@@ -69,4 +75,15 @@ void visualise_shortest_paths(const std::vector<std::vector<std::pair<int, int>>
         std::cout << " = " << dist[i] << '\n';
     }
     std::cout << '\n';
+}
+
+void print_vec(const std::vector<int>& vec, const std::string& name) {
+    std::cout << name << ": ";
+    for(int i = 0; i < vec.size(); i++) {
+        std::cout << "[" << i+1 << "]=" << vec[i];
+        if(i != vec.size()-1) {
+            std::cout << "; ";
+        }
+    }
+    std::cout << ".\n";
 }
