@@ -27,7 +27,7 @@ namespace btree {
     node *erase(node *root, int key);
 
     // deletes this binary tree, freeing the memory
-    void clear(node *root);
+    node *clear(node *root);
 
     // operations
 

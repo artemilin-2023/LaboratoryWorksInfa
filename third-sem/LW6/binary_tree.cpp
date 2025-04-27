@@ -1,7 +1,6 @@
 #include "binary_tree.h"
 
 #include <iostream>
-#include <limits>
 #include <stack>
 #include <queue>
 
@@ -97,9 +96,9 @@ namespace btree {
         return root;
     }
 
-    void clear(node *root) {
+    node *clear(node *root) {
         if (root == nullptr) {
-            return;
+            return nullptr;
         }
 
         // copied from btree::print_postorder. refer to that for comments
@@ -125,6 +124,7 @@ namespace btree {
                 stack.pop();
             }
         }
+        return nullptr;
     }
 
     node *search(node *root, int key) {
