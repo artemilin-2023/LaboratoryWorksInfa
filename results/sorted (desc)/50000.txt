@@ -1,0 +1,2 @@
+|selection_sort timing (ns)|selection_sort comparisons|selection_sort swaps|quick_sort_last timing (ns)|quick_sort_last comparisons|quick_sort_last swaps|quick_sort_median_of_3 timing (ns)|quick_sort_median_of_3 comparisons|quick_sort_median_of_3 swaps|quick_sort_hoare timing (ns)|quick_sort_hoare comparisons|quick_sort_hoare swaps
+results|2199956500|2500050001|50000|2116682200|2014385254|515139699|15197300|3610261|1145763|712400500|1085014141|36147

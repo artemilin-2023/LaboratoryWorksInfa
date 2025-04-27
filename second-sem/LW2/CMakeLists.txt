@@ -1,2 +1,12 @@
-add_executable(LW2-2-pointers ./LW2-pointers.cpp)
-add_executable(LW2-2-arrays ./LW2-arrays.cpp)
+add_executable(LW2-2-pointers
+    ./lw2-pointers/main.cpp
+    ./lw2-pointers/tasks.h
+    ./lw2-pointers/tasks.cpp
+    ./lw2-pointers/helpers.h
+    ./lw2-pointers/helpers.cpp)
+add_executable(LW2-2-arrays
+    ./lw2-arrays/main.cpp
+    ./lw2-arrays/tasks.h
+    ./lw2-arrays/tasks.cpp
+    ./lw2-arrays/helpers.h
+    ./lw2-arrays/helpers.cpp)

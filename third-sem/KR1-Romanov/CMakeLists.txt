@@ -1,0 +1,9 @@
+add_executable(KR1-Romanov
+        main.cpp
+        linked_list.tpp
+        linked_list.h
+        menu.cpp
+        menu.h
+        database.cpp
+        database.h
+)

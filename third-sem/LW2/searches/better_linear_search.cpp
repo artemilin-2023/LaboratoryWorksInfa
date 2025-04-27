@@ -2,8 +2,9 @@
 // Created by y7o4ka on 26.10.2024.
 //
 
-#include <iostream>
 #include "../searches.h"
+
+#include "../helpers.h"
 
 using hrc = std::chrono::high_resolution_clock;
 
@@ -39,15 +40,8 @@ int counted_better_linear_search(int const *const array, int size, int needle, s
 search_result better_linear_search(int const *const array, int size, int needle, int correct_index) {
     search_result res{};
 
-    std::cout << "Starting timed BLS. Correct index: " << correct_index << ". Got: ";
-    int timed_index = timed_better_linear_search(array, size, needle, res);
-    std::cout << timed_index << ". " << (timed_index == correct_index ? "Correct" : "!!!!!!!!INCORRECT!!!!!!!!")
-              << '\n';
-
-    std::cout << "Starting counted BLS. Correct index: " << correct_index << ". Got: ";
-    int counted_index = counted_better_linear_search(array, size, needle, res);
-    std::cout << counted_index << ". " << (counted_index == correct_index ? "Correct" : "!!!!!!!!INCORRECT!!!!!!!!")
-              << '\n';
+    print_search_result("timed BLS", [&] { return timed_better_linear_search(array, size, needle, res); }, correct_index);
+    print_search_result("counted BLS", [&] { return timed_better_linear_search(array, size, needle, res); }, correct_index);
 
     return res;
 };
