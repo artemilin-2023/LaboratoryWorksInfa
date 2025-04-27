@@ -5,7 +5,7 @@
 
 #include "location.h"
 
-extern HDC hDC;
+extern HDC hdc;
 
 class point : public location {
   public:
@@ -23,7 +23,6 @@ class point : public location {
   protected:
     void virtual _draw();
     void virtual _erase();
-  private:
     bool visible;
     COLORREF color;
 };

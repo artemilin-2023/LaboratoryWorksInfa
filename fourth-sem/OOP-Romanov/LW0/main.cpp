@@ -6,11 +6,12 @@
 #include <windows.h>
 
 #include "point.h"
+#include "chandelier.h"
 
 #define KEY_DOWN(vk_code) (GetAsyncKeyState(vk_code) & 0x8000)
 
 HWND hWnd;
-HDC hDC;
+HDC hdc;
 
 void update_loop(const std::vector<std::unique_ptr<point>>& objects);
 void repaint_objects(const std::vector<std::unique_ptr<point>>& objects);
@@ -21,8 +22,8 @@ int main() {
         std::cout << "There is no console window!\n";
         return 1;
     }
-    hDC = GetDC(hWnd);
-    if (!hDC) {
+    hdc = GetDC(hWnd);
+    if (!hdc) {
         std::cout << "There is no device context associated with the console window! (how?!?)\n";
         return 2;
     }
@@ -32,12 +33,12 @@ int main() {
     // create some example objects
     std::vector<std::unique_ptr<point>> vec;
     vec.emplace_back(new point(150, 100, true));
-    vec.emplace_back(new point(153, 100, true));
+    vec.emplace_back(new chandelier(153, 100, true, RGB(200, 150, 100)));
 
     update_loop(vec);
     repaint_objects(vec);
 
-    ReleaseDC(hWnd, hDC);
+    ReleaseDC(hWnd, hdc);
     return 0;
 }
 
@@ -115,7 +116,7 @@ void repaint_objects(const std::vector<std::unique_ptr<point>>& objects) {
 
     // Fill with default window background color
     HBRUSH hBrush = CreateSolidBrush(RGB(242, 242, 242));
-    FillRect(hDC, &clientRect, hBrush);
+    FillRect(hdc, &clientRect, hBrush);
     DeleteObject(hBrush);
 
     for (const auto &object : objects) {

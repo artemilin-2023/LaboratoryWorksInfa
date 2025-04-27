@@ -24,14 +24,14 @@ void point::move_to(const int x, const int y) {
         _draw();
 }
 void point::_draw() {
-    SetPixel(hDC, x,   y,   color);
-    SetPixel(hDC, x+1, y,   color);
-    SetPixel(hDC, x,   y+1, color);
-    SetPixel(hDC, x+1, y+1, color);
+    SetPixel(hdc, x,   y,   color);
+    SetPixel(hdc, x+1, y,   color);
+    SetPixel(hdc, x,   y+1, color);
+    SetPixel(hdc, x+1, y+1, color);
 }
 void point::_erase() {
-    SetPixel(hDC, x,   y,   RGB(242, 242, 242));
-    SetPixel(hDC, x+1, y,   RGB(242, 242, 242));
-    SetPixel(hDC, x,   y+1, RGB(242, 242, 242));
-    SetPixel(hDC, x+1, y+1, RGB(242, 242, 242));
+    SetPixel(hdc, x,   y,   RGB(242, 242, 242));
+    SetPixel(hdc, x+1, y,   RGB(242, 242, 242));
+    SetPixel(hdc, x,   y+1, RGB(242, 242, 242));
+    SetPixel(hdc, x+1, y+1, RGB(242, 242, 242));
 }
