@@ -5,12 +5,12 @@ void chandelier::_draw() {
     const auto oldBrush = static_cast<HBRUSH>(SelectObject(hdc, GetStockObject(DC_BRUSH)));
 
     // width: 200px
-    // height:
+    // height: 130px
 
     // power cord
     HPEN hPen = CreatePen(PS_SOLID, 3, RGB(100, 100, 100));
     SelectObject(hdc, hPen);
-    MoveToEx(hdc, x + 100, y, NULL); //
+    MoveToEx(hdc, x + 100, y, NULL);
     LineTo(hdc, x + 100, y + 50);     // длина крюка 50px
     DeleteObject(hPen);
 
