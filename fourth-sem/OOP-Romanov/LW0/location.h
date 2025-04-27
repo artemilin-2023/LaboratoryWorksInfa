@@ -3,8 +3,8 @@
 
 class location {
   public:
-    location(int x, int y);
-    ~location();
+    location(const int x, const int y) : x(x), y(y) {}
+    virtual ~location() = default;
     [[nodiscard]] int get_x() const;
     [[nodiscard]] int get_y() const;
     void set_x(int x);

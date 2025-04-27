@@ -9,9 +9,11 @@ extern HDC hDC;
 
 class point : public location {
   public:
-    point(int x, int y, COLORREF color = RGB(0, 0, 0));
-    point(int x, int y, bool visible, COLORREF color = RGB(0, 0, 0));
-    ~point();
+    point(const int x, const int y, const COLORREF color = RGB(0, 0, 0))
+        : location(x, y), visible(false), color(color) {}
+    point(const int x, const int y, const bool visible, const COLORREF color = RGB(0, 0, 0))
+        : location(x, y), visible(visible), color(color) {}
+    ~point() override;
 
     [[nodiscard]] bool is_visible() const;
 
@@ -19,6 +21,9 @@ class point : public location {
     void erase();
     void move_to(int x, int y);
   protected:
+    void virtual _draw();
+    void virtual _erase();
+  private:
     bool visible;
     COLORREF color;
 };

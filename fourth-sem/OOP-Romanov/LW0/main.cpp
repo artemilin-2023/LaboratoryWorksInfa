@@ -23,7 +23,7 @@ int main() {
     }
     hDC = GetDC(hWnd);
     if (!hDC) {
-        std::cout << "There is no device context associated with the console window! (how???)\n";
+        std::cout << "There is no device context associated with the console window! (how?!?)\n";
         return 2;
     }
     // let the Windows 11 console update first
