@@ -9,8 +9,8 @@ class chandelier final : public point {
         : point(x, y, visible, color) {}
 
   protected:
-    void _draw();
-    void _erase();
+    void _draw() override;
+    void _erase() override;
 };
 
 

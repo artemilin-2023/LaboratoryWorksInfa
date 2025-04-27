@@ -4,7 +4,7 @@
 class location {
   public:
     location(const int x, const int y) : x(x), y(y) {}
-    ~location() = default;
+    virtual ~location() = default;
     [[nodiscard]] int get_x() const;
     [[nodiscard]] int get_y() const;
     void set_x(int x);
