@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "../searches.h"
+#include "../helpers.h"
 
 using hrc = std::chrono::high_resolution_clock;
 
@@ -27,10 +28,7 @@ int timed_ordered_array_search(int const *const array, int size, int needle, sea
 search_result ordered_array_search(int const *const array, int size, int needle, int correct_index) {
     search_result res{};
 
-    std::cout << "Starting timed OAS. Correct index: " << correct_index << ". Got: ";
-    int timed_index = timed_ordered_array_search(array, size, needle, res);
-    std::cout << timed_index << ". " << (timed_index == correct_index ? "Correct" : "!!!!!!!!INCORRECT!!!!!!!!")
-              << '\n';
+    print_search_result("timed OAS", [&] { return timed_ordered_array_search(array, size, needle, res); }, correct_index);
 
     return res;
 };

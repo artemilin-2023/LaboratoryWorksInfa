@@ -21,6 +21,7 @@
 #include "types.h"
 #include "helpers.h"
 #include "searches.h"
+#include "indented_helpers.h"
 
 const long array_sizes[] = {
         10000,
@@ -57,19 +58,19 @@ perform_searches_and_save(int const *const array, long array_size, const std::ve
     }
     fout << '\n';
 
-    std::cout << "##Started " << pack_name << " sorts with size " << array_size << '\n';
     for (const auto &needle: needles) {
         fout << needle.name;
+        std::cout << m::start_indent << "Started " << pack_name << " searches with size " << array_size << " and \"" << needle.name << "\" needle" << '\n';
         auto fixed_array = std::make_unique_for_overwrite<int[]>(array_size);
         remove_number_from_array(array, fixed_array.get(), array_size, needle.needle, needle.correct_index);
 
         if (needle.should_restore_needle)
             fixed_array[needle.correct_index] = needle.needle;
         for (const auto &current_search: search_pack) {
-            std::cout << "#Started " << current_search.name << " with the \"" << needle.name << "\" needle" << '\n';
+            std::cout << m::start_indent << "Started " << current_search.name << '\n';
             search_result sort_result = current_search.func(fixed_array.get(), array_size, needle.needle,
                                                             needle.correct_index);
-            std::cout << "!Finished " << current_search.name
+            std::cout << m::end_indent << "Finished " << current_search.name
                       << ". It took "
                       << std::chrono::duration_cast<std::chrono::milliseconds>(sort_result.time_taken).count() << "ms"
                       << " and " << sort_result.comparison_count << " comparisons" << '\n';
@@ -77,9 +78,9 @@ perform_searches_and_save(int const *const array, long array_size, const std::ve
                  << sort_result.comparison_count;
         }
 
+        std::cout << m::end_indent << "Finished " << pack_name << " searches with size " << array_size << " and \"" << needle.name << "\" needle" << '\n';
         fout << '\n';
     }
-    std::cout << "!!Finished " << pack_name << " sorts" << '\n';
 }
 
 int main() {
