@@ -1,0 +1,29 @@
+#pragma once
+#include <iostream>
+#include <string>
+using namespace std;
+#include "point.h"
+
+// Класс карты, наследующийся от Point
+class Card : public Point {
+private:
+    string Rank;    // Достоинство карты (Туз, Король, Дама и т.д.)
+    string Suit;    // Масть карты (пики, червы, бубны, трефы)
+    int Width, Height;
+public:
+    Card(int InitX=200, int InitY=200, string InitRank="Туз", string InitSuit="пики", 
+         int InitWidth=100, int InitHeight=150);
+    ~Card();
+    
+    // Геттеры
+    string GetRank() { return Rank; }
+    string GetSuit() { return Suit; }
+    int GetWidth() { return Width; }
+    int GetHeight() { return Height; }
+    
+    // Переопределение методов из Point
+    void Show();
+    void Hide();
+    void MoveTo(int NewX, int NewY);
+    void Drag(int Step);
+}; 
