@@ -7,7 +7,8 @@ class location {
     ~location();
     [[nodiscard]] int get_x() const;
     [[nodiscard]] int get_y() const;
-    void move_to(int x, int y);
+    void set_x(int x);
+    void set_y(int y);
 
   protected:
     int x, y;

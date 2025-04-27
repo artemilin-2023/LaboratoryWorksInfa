@@ -5,20 +5,22 @@
 
 #include "location.h"
 
-extern HDC hdc;
+extern HDC hDC;
 
-class point : location {
-public:
-    point(int x, int y);
+class point : public location {
+  public:
+    point(int x, int y, COLORREF color = RGB(0, 0, 0));
+    point(int x, int y, bool visible, COLORREF color = RGB(0, 0, 0));
     ~point();
 
     [[nodiscard]] bool is_visible() const;
 
     void draw();
-    void hide();
+    void erase();
     void move_to(int x, int y);
-protected:
+  protected:
     bool visible;
+    COLORREF color;
 };
 
 #endif //POINT_H
