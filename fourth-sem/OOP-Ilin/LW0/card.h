@@ -2,7 +2,34 @@
 #include <iostream>
 #include <string>
 using namespace std;
-#include "point.h"
+
+class Location {
+protected:
+    int X, Y;
+public:
+    Location(int InitX, int InitY);
+    ~Location();
+    int GetX();
+    int GetY();
+    void SetX(int NewX) { X = NewX; };
+    void SetY(int NewY) { Y = NewY; };
+};
+
+class Point : public Location {
+protected:
+    bool Visible;
+public:
+    Point(int InitX, int InitY);
+    ~Point();
+    
+    bool GetVisible();
+    void SetVisible(bool NewVisible);
+    
+    void Drag(int Step);
+    void Show();
+    void Hide();
+    void MoveTo(int NewX, int NewY);
+}; 
 
 // Класс карты, наследующийся от Point
 class Card : public Point {

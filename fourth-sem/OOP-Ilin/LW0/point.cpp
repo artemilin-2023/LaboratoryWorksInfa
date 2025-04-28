@@ -4,7 +4,7 @@
 #include <chrono>
 #define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
 using namespace std;
-#include "point.h"
+#include "card.h"
 
 extern HDC hdc; // Внешняя переменная контекста устройства
 

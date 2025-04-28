@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-#include "location.h"
+#include "card.h"
 
 // Конструктор
 Location::Location(int InitX, int InitY)

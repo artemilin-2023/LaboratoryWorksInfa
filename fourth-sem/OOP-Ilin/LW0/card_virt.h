@@ -2,7 +2,34 @@
 #include <iostream>
 #include <string>
 using namespace std;
-#include "point_virt.h"
+
+class Location {
+protected:
+    int X, Y;
+public:
+    Location(int InitX, int InitY);
+    ~Location();
+    int GetX();
+    int GetY();
+    void SetX(int NewX) { X = NewX; };
+    void SetY(int NewY) { Y = NewY; };
+}; 
+
+class Point : public Location {
+protected:
+    bool Visible;
+public:
+    Point(int InitX, int InitY);
+    ~Point();
+    
+    bool GetVisible();
+    void SetVisible(bool NewVisible);
+    
+    virtual void Drag(int Step);
+    virtual void Show();
+    virtual void Hide();
+    void MoveTo(int NewX, int NewY);
+};
 
 // Класс карты с виртуальными методами, наследующийся от Point
 class Card : public Point {
@@ -24,6 +51,5 @@ public:
     // Переопределение виртуальных методов
     void Show() override;
     void Hide() override;
-    void MoveTo(int NewX, int NewY) override;
     void Drag(int Step) override;
 }; 
