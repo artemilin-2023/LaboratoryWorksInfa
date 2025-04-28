@@ -47,4 +47,9 @@ void chandelier::_draw() {
     SelectObject(hdc, oldPen);
     SelectObject(hdc, oldBrush);
 }
-void chandelier::_erase() { point::_erase(); }
+void chandelier::_erase() {
+    HBRUSH hBrush = CreateSolidBrush(RGB(242, 242, 242));
+    RECT rect = RECT(x, y, x+200, y+130);
+    FillRect(hdc, &rect, hBrush);
+    DeleteObject(hBrush);
+}

@@ -1,0 +1,9 @@
+add_executable(OOP-Romanov-2
+        main.cpp
+        location.cpp
+        location.h
+        point.cpp
+        point.h
+        chandelier.cpp
+        chandelier.h
+)
