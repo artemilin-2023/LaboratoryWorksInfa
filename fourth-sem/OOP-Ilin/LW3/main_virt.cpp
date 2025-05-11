@@ -20,9 +20,9 @@ const int CARD_TYPES = 2; // Количество типов карт (черв�
 const int INTERACTION_TYPES = 3; // Типы взаимодействий (карта-карта, карта-перемешиватель, карта-раздающий)
 
 // Функция для симуляции взаимодействий
-void CollisionSimulation(Card* currentCard,           // Текущая карта
+void CollisionSimulation(ICard* currentCard,           // Текущая карта
                         ConflictObject** objects,     // Массив объектов взаимодействия
-                        Card** cards,                 // Массив всех карт
+                        ICard** cards,                // Массив всех карт
                         int objectCount,              // Количество объектов
                         int cardCount,                // Количество карт
                         int interactionMatrix[][4])   // Матрица взаимодействий
@@ -61,7 +61,7 @@ void CollisionSimulation(Card* currentCard,           // Текущая карт
         if (duration_cast<milliseconds>(currentTime - lastInteractionTime).count() >= INTERACTION_INTERVAL) {
             // Проверка взаимодействий с другими картами
             for (int i = 0; i < cardCount; i++) {
-                if (cards[i] != currentCard && currentCard->IsColliding(cards[i])) {
+                if (cards[i] != currentCard && currentCard->IsColliding(dynamic_cast<Point*>(cards[i]))) {
                     int cardType = (currentCard->GetSuit() == "червы") ? 0 : 1;
                     int otherCardType = (cards[i]->GetSuit() == "червы") ? 0 : 1;
                     
@@ -143,7 +143,7 @@ int main()
     
     // Массив всех карт
     const int CARD_COUNT = 3;
-    Card* cards[CARD_COUNT] = { &heartsCard, &heartsCard2, &clubsCard };
+    ICard* cards[CARD_COUNT] = { &heartsCard, &heartsCard2, &clubsCard };
     
     // Массив объектов взаимодействия
     const int OBJECT_COUNT = 2;
