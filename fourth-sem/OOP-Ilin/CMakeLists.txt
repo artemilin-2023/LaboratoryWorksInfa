@@ -8,3 +8,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Добавление поддиректорий
 add_subdirectory(LW0)
 add_subdirectory(LW1)
+add_subdirectory(LW2)

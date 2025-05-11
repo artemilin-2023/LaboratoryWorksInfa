@@ -112,75 +112,75 @@ void Card::Show() {
     Rectangle(hdc, X - Width/2, Y - Height/2, X + Width/2, Y + Height/2);
     
     if (IsFaceUp) {
-    // Определяем цвет масти
-    COLORREF suitColor = RGB(0, 0, 0); // По умолчанию черный
-    
-    if (Suit == "червы" || Suit == "бубны") {
-        suitColor = RGB(255, 0, 0); // Красный для червей и бубнов
-    }
-    
-    // Создаем перо для текста
-    HPEN TextPen = CreatePen(PS_SOLID, 1, suitColor);
-    SelectObject(hdc, TextPen);
-    
-    // Устанавливаем цвет текста
-    SetTextColor(hdc, suitColor);
-    SetBkMode(hdc, TRANSPARENT);
-    
+        // Определяем цвет масти
+        COLORREF suitColor = RGB(0, 0, 0); // По умолчанию черный
+        
+        if (Suit == "червы" || Suit == "бубны") {
+            suitColor = RGB(255, 0, 0); // Красный для червей и бубнов
+        }
+        
+        // Создаем перо для текста
+        HPEN TextPen = CreatePen(PS_SOLID, 1, suitColor);
+        SelectObject(hdc, TextPen);
+        
+        // Устанавливаем цвет текста
+        SetTextColor(hdc, suitColor);
+        SetBkMode(hdc, TRANSPARENT);
+        
         // Конвертируем UTF-8 в широкие символы
-    wstring wRank = utf8_to_wstring(Rank);
-    wstring wSuit = utf8_to_wstring(Suit);
-    
-    // Выбираем шрифт для текста
-    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
-                             DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
-    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
-    
-    // Выводим достоинство и масть в верхнем левом углу
-    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 5, wRank.c_str(), wRank.length());
-    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 25, wSuit.c_str(), wSuit.length());
-    
-    // Получаем символ масти
-    const wchar_t* suitSymbolChar = L"";
-    
-    if (Suit == "пики") suitSymbolChar = L"\u2660"; // ♠
-    else if (Suit == "червы") suitSymbolChar = L"\u2665"; // ♥
-    else if (Suit == "бубны") suitSymbolChar = L"\u2666"; // ♦
-    else if (Suit == "трефы") suitSymbolChar = L"\u2663"; // ♣
-    
-    // Восстанавливаем предыдущий шрифт и освобождаем ресурс
-    SelectObject(hdc, hOldTextFont);
-    DeleteObject(hTextFont);
-    
-    // Выбираем шрифт большего размера для символа масти
-    HFONT hSymbolFont = CreateFontW(48, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
-                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                              ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
-    HFONT hOldSymbolFont = (HFONT)SelectObject(hdc, hSymbolFont);
-    
-    // Выводим символ в центре
-    TextOutW(hdc, X - 12, Y - 24, suitSymbolChar, wcslen(suitSymbolChar));
-    
-    // Восстанавливаем предыдущий шрифт
-    SelectObject(hdc, hOldSymbolFont);
-    DeleteObject(hSymbolFont);
-    
-    // Снова выбираем текстовый шрифт для нижнего угла
-    hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
-                     DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                     ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
-    hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
-    
-    // Выводим достоинство и масть в нижнем правом углу
-    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 40, wRank.c_str(), wRank.length());
-    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 20, wSuit.c_str(), wSuit.length());
-    
-    // Восстанавливаем предыдущий шрифт
-    SelectObject(hdc, hOldTextFont);
-    
-    // Освобождаем ресурсы
-    DeleteObject(hTextFont);
+        wstring wRank = utf8_to_wstring(Rank);
+        wstring wSuit = utf8_to_wstring(Suit);
+        
+        // Выбираем шрифт для текста
+        HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                                 DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                                 ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+        HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+        
+        // Выводим достоинство и масть в верхнем левом углу
+        TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 5, wRank.c_str(), wRank.length());
+        TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 25, wSuit.c_str(), wSuit.length());
+        
+        // Получаем символ масти
+        const wchar_t* suitSymbolChar = L"";
+        
+        if (Suit == "пики") suitSymbolChar = L"\u2660"; // ♠
+        else if (Suit == "червы") suitSymbolChar = L"\u2665"; // ♥
+        else if (Suit == "бубны") suitSymbolChar = L"\u2666"; // ♦
+        else if (Suit == "трефы") suitSymbolChar = L"\u2663"; // ♣
+        
+        // Восстанавливаем предыдущий шрифт и освобождаем ресурс
+        SelectObject(hdc, hOldTextFont);
+        DeleteObject(hTextFont);
+        
+        // Выбираем шрифт большего размера для символа масти
+        HFONT hSymbolFont = CreateFontW(48, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                                  DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                                  ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
+        HFONT hOldSymbolFont = (HFONT)SelectObject(hdc, hSymbolFont);
+        
+        // Выводим символ в центре
+        TextOutW(hdc, X - 12, Y - 24, suitSymbolChar, wcslen(suitSymbolChar));
+        
+        // Восстанавливаем предыдущий шрифт
+        SelectObject(hdc, hOldSymbolFont);
+        DeleteObject(hSymbolFont);
+        
+        // Снова выбираем текстовый шрифт для нижнего угла
+        hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                         DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                         ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+        hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+        
+        // Выводим достоинство и масть в нижнем правом углу
+        TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 40, wRank.c_str(), wRank.length());
+        TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 20, wSuit.c_str(), wSuit.length());
+        
+        // Восстанавливаем предыдущий шрифт
+        SelectObject(hdc, hOldTextFont);
+        
+        // Освобождаем ресурсы
+        DeleteObject(hTextFont);
         DeleteObject(TextPen);
     } else {
         // Рисуем рубашку карты
