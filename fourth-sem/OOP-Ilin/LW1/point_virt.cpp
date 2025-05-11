@@ -3,7 +3,8 @@
 #include <thread>
 #include <chrono>
 #define KEY_DOWN(vk_code) ((GetAsyncKeyState(vk_code) & 0x8000) ? 1 : 0)
-using namespace std;
+using std::cout;
+using std::endl;
 #include "card_virt.h"
 
 extern HDC hdc; // Внешняя переменная контекста устройства
@@ -11,7 +12,8 @@ extern HDC hdc; // Внешняя переменная контекста уст
 // Конструктор
 Point::Point(int InitX, int InitY) : Location(InitX, InitY)
 {
-    Visible = false; // Точка не видна
+    Visible = false;
+    ChangeHitbox();
 }
 
 // Деструктор
@@ -21,6 +23,11 @@ Point::~Point()
 }
 
 // Получить видимость точки
+bool Point::IsVisible()
+{
+    return Visible;
+}
+
 bool Point::GetVisible()
 {
     return Visible;
@@ -32,10 +39,31 @@ void Point::SetVisible(bool NewVisible)
     Visible = NewVisible;
 }
 
+// Получить границы хитбокса
+int Point::GetRightBorder()
+{
+    return rightBorder;
+}
+
+int Point::GetLeftBorder()
+{
+    return leftBorder;
+}
+
+int Point::GetTopBorder()
+{
+    return topBorder;
+}
+
+int Point::GetBottomBorder()
+{
+    return bottomBorder;
+}
+
 // Показать точку (виртуальный метод)
 void Point::Show()
 {
-    Visible = true; // Точка видна
+    Visible = true;
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     SetPixel(hdc, X, Y, RGB(255, 0, 0)); // Рисуем красную точку
@@ -49,7 +77,7 @@ void Point::Show()
 // Скрыть точку (виртуальный метод)
 void Point::Hide()
 {
-    Visible = false; // Точка не видна
+    Visible = false;
 
     // Рисуем 4 точки черным цветом (цвет фона)
     SetPixel(hdc, X, Y, RGB(0, 0, 0));
@@ -104,4 +132,21 @@ void Point::Drag(int Step)
             Sleep(500);
         }
     }
+}
+
+void Point::ChangeHitbox()
+{
+    // Базовая реализация - хитбокс размером 10x10 пикселей
+    leftBorder = X - 5;
+    rightBorder = X + 5;
+    topBorder = Y - 5;
+    bottomBorder = Y + 5;
+}
+
+bool Point::IsColliding(Point* other)
+{
+    return !(leftBorder > other->GetRightBorder() ||
+             rightBorder < other->GetLeftBorder() ||
+             topBorder > other->GetBottomBorder() ||
+             bottomBorder < other->GetTopBorder());
 } 

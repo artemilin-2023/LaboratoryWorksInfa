@@ -1,6 +1,7 @@
 #include <iostream>
-using namespace std;
-#include "card.h"
+using std::cout;
+using std::endl;
+#include "card_virt.h"
 
 // Конструктор
 Location::Location(int InitX, int InitY)
@@ -25,4 +26,16 @@ int Location::GetX()
 int Location::GetY()
 {
     return Y;
+}
+
+// Установить X
+void Location::SetX(int NewX)
+{
+    X = NewX;
+}
+
+// Установить Y
+void Location::SetY(int NewY)
+{
+    Y = NewY;
 } 
