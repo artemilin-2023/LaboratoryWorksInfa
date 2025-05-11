@@ -43,32 +43,17 @@ void CollisionSimulation(Card* currentCard,           // Текущая карт
         }
 
         // Перемещение текущей карты
-        if (currentCardIndex == 0) { // Управление первой картой (червы)
-            if (KEY_DOWN(VK_LEFT)) {
-                currentCard->MoveTo(currentCard->GetX() - 5, currentCard->GetY());
-            }
-            if (KEY_DOWN(VK_RIGHT)) {
-                currentCard->MoveTo(currentCard->GetX() + 5, currentCard->GetY());
-            }
-            if (KEY_DOWN(VK_UP)) {
-                currentCard->MoveTo(currentCard->GetX(), currentCard->GetY() - 5);
-            }
-            if (KEY_DOWN(VK_DOWN)) {
-                currentCard->MoveTo(currentCard->GetX(), currentCard->GetY() + 5);
-            }
-        } else { // Управление второй картой (трефы)
-            if (KEY_DOWN('A')) {
-                currentCard->MoveTo(currentCard->GetX() - 5, currentCard->GetY());
-            }
-            if (KEY_DOWN('D')) {
-                currentCard->MoveTo(currentCard->GetX() + 5, currentCard->GetY());
-            }
-            if (KEY_DOWN('W')) {
-                currentCard->MoveTo(currentCard->GetX(), currentCard->GetY() - 5);
-            }
-            if (KEY_DOWN('S')) {
-                currentCard->MoveTo(currentCard->GetX(), currentCard->GetY() + 5);
-            }
+        if (KEY_DOWN(VK_LEFT)) {
+            currentCard->MoveTo(currentCard->GetX() - 5, currentCard->GetY());
+        }
+        if (KEY_DOWN(VK_RIGHT)) {
+            currentCard->MoveTo(currentCard->GetX() + 5, currentCard->GetY());
+        }
+        if (KEY_DOWN(VK_UP)) {
+            currentCard->MoveTo(currentCard->GetX(), currentCard->GetY() - 5);
+        }
+        if (KEY_DOWN(VK_DOWN)) {
+            currentCard->MoveTo(currentCard->GetX(), currentCard->GetY() + 5);
         }
 
         // Проверяем, прошло ли достаточно времени с последнего взаимодействия
@@ -149,6 +134,7 @@ int main()
 
     // Создаем карты разных мастей
     HeartsCard heartsCard(300, 200, "Туз");
+    HeartsCard heartsCard2(500, 200, "Король");
     ClubsCard clubsCard(500, 200, "Король");
     
     // Создаем объекты взаимодействия
@@ -156,8 +142,8 @@ int main()
     CardDealer dealer(600, 400);
     
     // Массив всех карт
-    const int CARD_COUNT = 2;
-    Card* cards[CARD_COUNT] = { &heartsCard, &clubsCard };
+    const int CARD_COUNT = 3;
+    Card* cards[CARD_COUNT] = { &heartsCard, &heartsCard2, &clubsCard };
     
     // Массив объектов взаимодействия
     const int OBJECT_COUNT = 2;
@@ -167,13 +153,12 @@ int main()
     // [0][0] - червы-червы, [0][1] - червы-трефы, [0][2] - червы-перемешиватель, [0][3] - червы-раздающий
     // [1][0] - трефы-червы, [1][1] - трефы-трефы, [1][2] - трефы-перемешиватель, [1][3] - трефы-раздающий
     int interactionMatrix[CARD_TYPES][4] = {
-        {2, 1, 1, 1},  // Взаимодействия для червей
-        {1, 2, 1, 1}   // Взаимодействия для треф
+        {0, 1, 1, 1},  // Взаимодействия для червей
+        {1, 0, 1, 1}   // Взаимодействия для треф
     };
     
     cout << "Демонстрация работы с картами:\n";
-    cout << "1. Используйте стрелки для перемещения карты червей\n";
-    cout << "2. Используйте WASD для перемещения карты треф\n";
+    cout << "1. Используйте стрелки для перемещения карт\n";
     cout << "3. Нажмите пробел для переключения между картами\n";
     cout << "4. При пересечении карт или объектов произойдет взаимодействие\n";
     cout << "5. Нажмите ESC для выхода\n";
