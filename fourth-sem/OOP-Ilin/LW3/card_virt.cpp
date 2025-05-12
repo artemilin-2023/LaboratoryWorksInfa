@@ -96,116 +96,136 @@ wstring utf8_to_wstring(const string& str) {
     return wstrTo;
 }
 
-// Показать карту
+// Вспомогательные методы для отрисовки карты
+void Card::DrawCardBorder() {
+    HPEN Pen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+    SelectObject(hdc, Pen);
+    Rectangle(hdc, X - Width/2, Y - Height/2, X + Width/2, Y + Height/2);
+    DeleteObject(Pen);
+}
+
+void Card::DrawCardBackground() {
+    HBRUSH Brush = CreateSolidBrush(RGB(255, 255, 255));
+    SelectObject(hdc, Brush);
+    Rectangle(hdc, X - Width/2, Y - Height/2, X + Width/2, Y + Height/2);
+    DeleteObject(Brush);
+}
+
+// Базовая реализация отрисовки ранга
+void Card::DrawRank() {
+    // Создаем шрифт для текста
+    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                             DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+    
+    // Устанавливаем цвет текста
+    SetTextColor(hdc, RGB(0, 0, 0));
+    SetBkMode(hdc, TRANSPARENT);
+    
+    // Конвертируем UTF-8 в широкие символы
+    wstring wRank = utf8_to_wstring(Rank);
+    
+    // Выводим достоинство в верхнем левом и нижнем правом углах
+    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 5, wRank.c_str(), wRank.length());
+    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 40, wRank.c_str(), wRank.length());
+    
+    // Восстанавливаем шрифт
+    SelectObject(hdc, hOldTextFont);
+    DeleteObject(hTextFont);
+}
+
+// Базовая реализация отрисовки масти
+void Card::DrawSuit() {
+    // Создаем шрифт для текста
+    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                             DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+    
+    // Устанавливаем цвет текста
+    COLORREF suitColor = (Suit == "червы" || Suit == "бубны") ? RGB(255, 0, 0) : RGB(0, 0, 0);
+    SetTextColor(hdc, suitColor);
+    SetBkMode(hdc, TRANSPARENT);
+    
+    // Конвертируем UTF-8 в широкие символы
+    wstring wSuit = utf8_to_wstring(Suit);
+    
+    // Выводим масть в верхнем левом и нижнем правом углах
+    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 25, wSuit.c_str(), wSuit.length());
+    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 20, wSuit.c_str(), wSuit.length());
+    
+    // Восстанавливаем шрифт
+    SelectObject(hdc, hOldTextFont);
+    DeleteObject(hTextFont);
+}
+
+// Базовая реализация отрисовки рубашки
+void Card::DrawBack() {
+    // Рисуем рубашку карты
+    HPEN BackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+    HBRUSH BackBrush = CreateSolidBrush(RGB(0, 0, 255));
+    SelectObject(hdc, BackPen);
+    SelectObject(hdc, BackBrush);
+    
+    // Рисуем узор на рубашке
+    for (int i = 0; i < Width; i += 10) {
+        for (int j = 0; j < Height; j += 10) {
+            if ((i + j) % 20 == 0) {
+                Rectangle(hdc, X - Width/2 + i, Y - Height/2 + j, 
+                         X - Width/2 + i + 10, Y - Height/2 + j + 10);
+            }
+        }
+    }
+    
+    DeleteObject(BackPen);
+    DeleteObject(BackBrush);
+}
+
+// Базовая реализация отрисовки центральной масти
+void Card::DrawCenterSuit() {
+    // Создаем шрифт для символа масти
+    HFONT hSymbolFont = CreateFontW(48, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                              ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
+    HFONT hOldSymbolFont = (HFONT)SelectObject(hdc, hSymbolFont);
+    
+    // Получаем символ масти
+    const wchar_t* suitSymbolChar = L"";
+    if (Suit == "пики") suitSymbolChar = L"\u2660";
+    else if (Suit == "червы") suitSymbolChar = L"\u2665";
+    else if (Suit == "бубны") suitSymbolChar = L"\u2666";
+    else if (Suit == "трефы") suitSymbolChar = L"\u2663";
+    
+    // Устанавливаем цвет масти
+    COLORREF suitColor = (Suit == "червы" || Suit == "бубны") ? RGB(255, 0, 0) : RGB(0, 0, 0);
+    SetTextColor(hdc, suitColor);
+    
+    // Рисуем символ в центре
+    TextOutW(hdc, X - 12, Y - 24, suitSymbolChar, wcslen(suitSymbolChar));
+    
+    // Восстанавливаем шрифт
+    SelectObject(hdc, hOldSymbolFont);
+    DeleteObject(hSymbolFont);
+}
+
+// Общая реализация отрисовки карты
 void Card::Show() {
     Visible = true;
     
-    // Создаем перо и кисть
-    HPEN Pen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
-    HBRUSH Brush = CreateSolidBrush(RGB(255, 255, 255));
-    
-    // Выбираем перо и кисть
-    SelectObject(hdc, Pen);
-    SelectObject(hdc, Brush);
-    
-    // Рисуем прямоугольник карты
-    Rectangle(hdc, X - Width/2, Y - Height/2, X + Width/2, Y + Height/2);
+    // Рисуем границу и фон карты
+    DrawCardBorder();
+    DrawCardBackground();
     
     if (IsFaceUp) {
-        // Определяем цвет масти
-        COLORREF suitColor = RGB(0, 0, 0); // По умолчанию черный
-        
-        if (Suit == "червы" || Suit == "бубны") {
-            suitColor = RGB(255, 0, 0); // Красный для червей и бубнов
-        }
-        
-        // Создаем перо для текста
-        HPEN TextPen = CreatePen(PS_SOLID, 1, suitColor);
-        SelectObject(hdc, TextPen);
-        
-        // Устанавливаем цвет текста
-        SetTextColor(hdc, suitColor);
-        SetBkMode(hdc, TRANSPARENT);
-        
-        // Конвертируем UTF-8 в широкие символы
-        wstring wRank = utf8_to_wstring(Rank);
-        wstring wSuit = utf8_to_wstring(Suit);
-        
-        // Выбираем шрифт для текста
-        HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
-                                 DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                                 ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
-        HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
-        
-        // Выводим достоинство и масть в верхнем левом углу
-        TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 5, wRank.c_str(), wRank.length());
-        TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 25, wSuit.c_str(), wSuit.length());
-        
-        // Получаем символ масти
-        const wchar_t* suitSymbolChar = L"";
-        
-        if (Suit == "пики") suitSymbolChar = L"\u2660"; // ♠
-        else if (Suit == "червы") suitSymbolChar = L"\u2665"; // ♥
-        else if (Suit == "бубны") suitSymbolChar = L"\u2666"; // ♦
-        else if (Suit == "трефы") suitSymbolChar = L"\u2663"; // ♣
-        
-        // Восстанавливаем предыдущий шрифт и освобождаем ресурс
-        SelectObject(hdc, hOldTextFont);
-        DeleteObject(hTextFont);
-        
-        // Выбираем шрифт большего размера для символа масти
-        HFONT hSymbolFont = CreateFontW(48, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
-                                  DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                                  ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
-        HFONT hOldSymbolFont = (HFONT)SelectObject(hdc, hSymbolFont);
-        
-        // Выводим символ в центре
-        TextOutW(hdc, X - 12, Y - 24, suitSymbolChar, wcslen(suitSymbolChar));
-        
-        // Восстанавливаем предыдущий шрифт
-        SelectObject(hdc, hOldSymbolFont);
-        DeleteObject(hSymbolFont);
-        
-        // Снова выбираем текстовый шрифт для нижнего угла
-        hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
-                         DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                         ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
-        hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
-        
-        // Выводим достоинство и масть в нижнем правом углу
-        TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 40, wRank.c_str(), wRank.length());
-        TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 20, wSuit.c_str(), wSuit.length());
-        
-        // Восстанавливаем предыдущий шрифт
-        SelectObject(hdc, hOldTextFont);
-        
-        // Освобождаем ресурсы
-        DeleteObject(hTextFont);
-        DeleteObject(TextPen);
+        // Рисуем лицевую сторону
+        DrawRank();
+        DrawSuit();
+        DrawCenterSuit();
     } else {
-        // Рисуем рубашку карты
-        HPEN BackPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
-        HBRUSH BackBrush = CreateSolidBrush(RGB(0, 0, 255));
-        SelectObject(hdc, BackPen);
-        SelectObject(hdc, BackBrush);
-        
-        // Рисуем узор на рубашке
-        for (int i = 0; i < Width; i += 10) {
-            for (int j = 0; j < Height; j += 10) {
-                if ((i + j) % 20 == 0) {
-                    Rectangle(hdc, X - Width/2 + i, Y - Height/2 + j, 
-                             X - Width/2 + i + 10, Y - Height/2 + j + 10);
-                }
-            }
-        }
-        
-        DeleteObject(BackPen);
-        DeleteObject(BackBrush);
+        // Рисуем рубашку
+        DrawBack();
     }
-    
-    // Освобождаем ресурсы
-    DeleteObject(Pen);
-    DeleteObject(Brush);
 }
 
 // Скрыть карту
@@ -241,131 +261,176 @@ void Card::Interact(ICard* other) {
     other->Flip();
 }
 
-// Показать карту червей
-void HeartsCard::Show() {
-    // Сначала вызываем базовую реализацию
-    Card::Show();
-    
-    if (IsFaceUp) {
-        // Добавляем специальные эффекты для червей
-        HPEN Pen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
-        SelectObject(hdc, Pen);
-        
-        // Рисуем дополнительные сердечки по углам
-        const wchar_t* heartSymbol = L"\u2665";
-        HFONT hFont = CreateFontW(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+// Реализация HeartsCard
+void HeartsCard::DrawRank() {
+    // Создаем шрифт для текста
+    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
-        HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
-        
-        // Рисуем сердечки в углах
-        TextOutW(hdc, X - Width/2 + 10, Y - Height/2 + 10, heartSymbol, 1);
-        TextOutW(hdc, X + Width/2 - 20, Y - Height/2 + 10, heartSymbol, 1);
-        TextOutW(hdc, X - Width/2 + 10, Y + Height/2 - 20, heartSymbol, 1);
-        TextOutW(hdc, X + Width/2 - 20, Y + Height/2 - 20, heartSymbol, 1);
-        
-        // Восстанавливаем шрифт
-        SelectObject(hdc, hOldFont);
-        DeleteObject(hFont);
-        DeleteObject(Pen);
-    }
+                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+    
+    // Устанавливаем красный цвет для червей
+    SetTextColor(hdc, RGB(255, 0, 0));
+    SetBkMode(hdc, TRANSPARENT);
+    
+    // Конвертируем UTF-8 в широкие символы
+    wstring wRank = utf8_to_wstring(Rank);
+    
+    // Выводим достоинство с дополнительными сердечками
+    const wchar_t* heartSymbol = L"\u2665";
+    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 5, wRank.c_str(), wRank.length());
+    TextOutW(hdc, X - Width/2 + 25, Y - Height/2 + 5, heartSymbol, 1);
+    
+    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 40, wRank.c_str(), wRank.length());
+    TextOutW(hdc, X + Width/2 - 20, Y + Height/2 - 40, heartSymbol, 1);
+    
+    SelectObject(hdc, hOldTextFont);
+    DeleteObject(hTextFont);
 }
 
-// Взаимодействие с другой картой (для червей)
-void HeartsCard::Interact(ICard* other) {
-    // Если другая карта тоже черви, они "сливаются" в одно большое сердце
-    if (other->GetSuit() == "червы") {
-        // Создаем большое сердце
-        HPEN Pen = CreatePen(PS_SOLID, 4, RGB(255, 0, 0));
-        SelectObject(hdc, Pen);
-        
-        const wchar_t* bigHeart = L"\u2665";
-        HFONT hFont = CreateFontW(72, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, 
+void HeartsCard::DrawSuit() {
+    // Создаем шрифт для текста
+    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
-                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
-        HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
-        
-        // Рисуем большое сердце между картами
-        int centerX = (X + other->GetX()) / 2;
-        int centerY = (Y + other->GetY()) / 2;
-        TextOutW(hdc, centerX - 36, centerY - 36, bigHeart, 1);
-        
-        // Восстанавливаем шрифт
-        SelectObject(hdc, hOldFont);
-        DeleteObject(hFont);
-        DeleteObject(Pen);
-        
-        Sleep(1000); // Показываем эффект 1 секунду
-    }
+                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
     
-    // Вызываем базовую реализацию
-    Card::Interact(other);
+    // Устанавливаем красный цвет для червей
+    SetTextColor(hdc, RGB(255, 0, 0));
+    SetBkMode(hdc, TRANSPARENT);
+    
+    // Конвертируем UTF-8 в широкие символы
+    wstring wSuit = utf8_to_wstring(Suit);
+    
+    // Выводим масть с дополнительными сердечками
+    const wchar_t* heartSymbol = L"\u2665";
+    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 25, wSuit.c_str(), wSuit.length());
+    TextOutW(hdc, X - Width/2 + 25, Y - Height/2 + 25, heartSymbol, 1);
+    
+    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 20, wSuit.c_str(), wSuit.length());
+    TextOutW(hdc, X + Width/2 - 20, Y + Height/2 - 20, heartSymbol, 1);
+    
+    SelectObject(hdc, hOldTextFont);
+    DeleteObject(hTextFont);
 }
 
-// Показать карту треф
-void ClubsCard::Show() {
-    // Сначала вызываем базовую реализацию
-    Card::Show();
+void HeartsCard::DrawCenterSuit() {
+    // Создаем шрифт для символа масти
+    HFONT hSymbolFont = CreateFontW(48, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                              ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
+    HFONT hOldSymbolFont = (HFONT)SelectObject(hdc, hSymbolFont);
     
-    if (IsFaceUp) {
-        // Добавляем специальные эффекты для треф
-        HPEN Pen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
-        SelectObject(hdc, Pen);
-        
-        // Рисуем дополнительные трефы по углам
-        const wchar_t* clubSymbol = L"\u2663";
-        HFONT hFont = CreateFontW(20, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+    // Устанавливаем красный цвет для червей
+    SetTextColor(hdc, RGB(255, 0, 0));
+    
+    // Рисуем большое сердце в центре
+    const wchar_t* heartSymbol = L"\u2665";
+    TextOutW(hdc, X - 12, Y - 24, heartSymbol, wcslen(heartSymbol));
+    
+    // Добавляем маленькие сердечки вокруг центрального
+    HFONT hSmallFont = CreateFontW(24, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
                              ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
-        HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
-        
-        // Рисуем трефы в углах
-        TextOutW(hdc, X - Width/2 + 10, Y - Height/2 + 10, clubSymbol, 1);
-        TextOutW(hdc, X + Width/2 - 20, Y - Height/2 + 10, clubSymbol, 1);
-        TextOutW(hdc, X - Width/2 + 10, Y + Height/2 - 20, clubSymbol, 1);
-        TextOutW(hdc, X + Width/2 - 20, Y + Height/2 - 20, clubSymbol, 1);
-        
-        // Восстанавливаем шрифт
-        SelectObject(hdc, hOldFont);
-        DeleteObject(hFont);
-        DeleteObject(Pen);
-    }
+    HFONT hOldSmallFont = (HFONT)SelectObject(hdc, hSmallFont);
+    
+    // Рисуем маленькие сердечки по углам центрального
+    TextOutW(hdc, X - 30, Y - 30, heartSymbol, 1);
+    TextOutW(hdc, X + 6, Y - 30, heartSymbol, 1);
+    TextOutW(hdc, X - 30, Y + 6, heartSymbol, 1);
+    TextOutW(hdc, X + 6, Y + 6, heartSymbol, 1);
+    
+    // Восстанавливаем шрифты
+    SelectObject(hdc, hOldSmallFont);
+    DeleteObject(hSmallFont);
+    SelectObject(hdc, hOldSymbolFont);
+    DeleteObject(hSymbolFont);
 }
 
-// Взаимодействие с другой картой (для треф)
-void ClubsCard::Interact(ICard* other) {
-    // Если другая карта тоже трефы, они создают "щит"
-    if (other->GetSuit() == "трефы") {
-        // Создаем щит из треф
-        HPEN Pen = CreatePen(PS_SOLID, 4, RGB(0, 0, 0));
-        SelectObject(hdc, Pen);
-        
-        const wchar_t* shieldClub = L"\u2663";
-        HFONT hFont = CreateFontW(72, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE, 
+// Реализация ClubsCard
+void ClubsCard::DrawRank() {
+    // Создаем шрифт для текста
+    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                             DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+    
+    // Устанавливаем черный цвет для треф
+    SetTextColor(hdc, RGB(0, 0, 0));
+    SetBkMode(hdc, TRANSPARENT);
+    
+    // Конвертируем UTF-8 в широкие символы
+    wstring wRank = utf8_to_wstring(Rank);
+    
+    // Выводим достоинство с дополнительными трефами
+    const wchar_t* clubSymbol = L"\u2663";
+    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 5, wRank.c_str(), wRank.length());
+    TextOutW(hdc, X - Width/2 + 25, Y - Height/2 + 5, clubSymbol, 1);
+    
+    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 40, wRank.c_str(), wRank.length());
+    TextOutW(hdc, X + Width/2 - 20, Y + Height/2 - 40, clubSymbol, 1);
+    
+    SelectObject(hdc, hOldTextFont);
+    DeleteObject(hTextFont);
+}
+
+void ClubsCard::DrawSuit() {
+    // Создаем шрифт для текста
+    HFONT hTextFont = CreateFontW(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                             DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                             ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial");
+    HFONT hOldTextFont = (HFONT)SelectObject(hdc, hTextFont);
+    
+    // Устанавливаем черный цвет для треф
+    SetTextColor(hdc, RGB(0, 0, 0));
+    SetBkMode(hdc, TRANSPARENT);
+    
+    // Конвертируем UTF-8 в широкие символы
+    wstring wSuit = utf8_to_wstring(Suit);
+    
+    // Выводим масть с дополнительными трефами
+    const wchar_t* clubSymbol = L"\u2663";
+    TextOutW(hdc, X - Width/2 + 5, Y - Height/2 + 25, wSuit.c_str(), wSuit.length());
+    TextOutW(hdc, X - Width/2 + 25, Y - Height/2 + 25, clubSymbol, 1);
+    
+    TextOutW(hdc, X + Width/2 - 40, Y + Height/2 - 20, wSuit.c_str(), wSuit.length());
+    TextOutW(hdc, X + Width/2 - 20, Y + Height/2 - 20, clubSymbol, 1);
+    
+    SelectObject(hdc, hOldTextFont);
+    DeleteObject(hTextFont);
+}
+
+void ClubsCard::DrawCenterSuit() {
+    // Создаем шрифт для символа масти
+    HFONT hSymbolFont = CreateFontW(48, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
+                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
+                              ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
+    HFONT hOldSymbolFont = (HFONT)SelectObject(hdc, hSymbolFont);
+    
+    // Устанавливаем черный цвет для треф
+    SetTextColor(hdc, RGB(0, 0, 0));
+    
+    // Рисуем большую трефу в центре
+    const wchar_t* clubSymbol = L"\u2663";
+    TextOutW(hdc, X - 12, Y - 24, clubSymbol, wcslen(clubSymbol));
+    
+    // Добавляем маленькие трефы вокруг центральной
+    HFONT hSmallFont = CreateFontW(24, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, 
                              DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, 
                              ANTIALIASED_QUALITY, DEFAULT_PITCH, L"Arial Unicode MS");
-        HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
-        
-        // Рисуем щит между картами
-        int centerX = (X + other->GetX()) / 2;
-        int centerY = (Y + other->GetY()) / 2;
-        
-        // Рисуем круг щита
-        Ellipse(hdc, centerX - 50, centerY - 50, centerX + 50, centerY + 50);
-        
-        // Рисуем трефу в центре щита
-        TextOutW(hdc, centerX - 36, centerY - 36, shieldClub, 1);
-        
-        // Восстанавливаем шрифт
-        SelectObject(hdc, hOldFont);
-        DeleteObject(hFont);
-        DeleteObject(Pen);
-        
-        Sleep(1000); // Показываем эффект 1 секунду
-    }
+    HFONT hOldSmallFont = (HFONT)SelectObject(hdc, hSmallFont);
     
-    // Вызываем базовую реализацию
-    Card::Interact(other);
+    // Рисуем маленькие трефы по углам центральной
+    TextOutW(hdc, X - 30, Y - 30, clubSymbol, 1);
+    TextOutW(hdc, X + 6, Y - 30, clubSymbol, 1);
+    TextOutW(hdc, X - 30, Y + 6, clubSymbol, 1);
+    TextOutW(hdc, X + 6, Y + 6, clubSymbol, 1);
+    
+    // Восстанавливаем шрифты
+    SelectObject(hdc, hOldSmallFont);
+    DeleteObject(hSmallFont);
+    SelectObject(hdc, hOldSymbolFont);
+    DeleteObject(hSymbolFont);
 }
 
 // Показать перемешиватель карт
